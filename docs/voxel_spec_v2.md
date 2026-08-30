@@ -16,14 +16,33 @@ quantized dimension, rather than being squeezed into hue/sat/light.
 
 ## The voxel record
 
-Each output entry (a "paint stroke") is:
+Each cell holds:
 
-  ( x, y, z , hue, brightness, translucency, density )
+  density ρ          one value per cell (mass there; ADDS like mass adds)
+  color-set          up to K=2 entries, each (hue, brightness, alpha)
+                     - the superimposed set; entries alternate in time
+                     in the renderer, never average (2^k branch ceiling)
 
-with value dims quantized to 2 significant figures (~100 buckets each;
-axes are integer cell indices already). Entries are a SET per cell (the
-superposition rule is unchanged: co-located entries alternate in time in
-the renderer; they never average).
+Position = the cell index itself. Value dims quantized to 2 significant
+figures (~100 buckets each; axes are integer cell indices already).
+
+CRITICAL (Sean's catch, 2026-08-30): the color structure is a SET per
+cell, not a single record - a cell has ONE density (mass adds) but TWO
+coexisting colors (they alternate, they never blend). A one-tuple-per-
+cell design would force co-located red+blue to emit a single hue -
+i.e., mixing, the exact failure the architecture exists to prevent.
+
+Multiplicity decomposition (why bounded colors, unbounded cells):
+
+  * spatial multiplicity is UNBOUNDED: a thought lights as many cells
+    as its content needs ("simple thoughts take a small part of vision;
+    complex ones pack a closed space").
+  * per-cell color multiplicity is BOUNDED (cap K=2): uncertainty has a
+    branch ceiling at one location; k superimposed colors = 2^k
+    reachable branches downstream (the transition-kernel reading).
+  * density is per-cell single-valued for a reason: the field's
+    gradient/integral need ONE mass value; density superposes by
+    addition, hue superposes as a set. Mass adds; colors don't.
 
 ## Dim semantics — the load-bearing table
 
@@ -56,14 +75,19 @@ Requirement: model emits as many entries as the thought needs ("talk
 until the prompt is satisfied"), not a fixed slot count.
 
 Design: model outputs a full OCCUPANCY FIELD over the 8^3 grid - per
-cell, (density, hue, brightness, alpha). "As many as needed" = however
-many cells get nonzero density. No autoregressive stop-token machinery,
-no length penalty; adaptive compute emerges from sparsity, and the
-whole-present-moment read stays a single O(512) pass. Cost: 512 cells x
-~4 quantized dims is still trivial next to any transformer's logits.
+cell, density plus a bounded color-set of K=2 entries (each hue,
+brightness, alpha). "As many as needed" = however many cells get
+nonzero density; adaptive compute emerges from sparsity, no stop-token
+machinery, and the whole-present-moment read stays a single O(512)
+pass. Cost: 512 cells x (1 + K*3) quantized dims is still trivial next
+to any transformer's logits.
 
 This also retires the v1 single-argmax-cell limit (thoughts currently
-collapse to one point - the known model-side gap).
+collapse to one point - the known model-side gap) WITHOUT giving up
+superposition: spatial multiplicity is free, per-cell color multiplicity
+is bounded at the branch ceiling. Head shape per cell: 1 density logit +
+K x (hue logits, brightness, alpha, existence) - a categorical + soft
+attention set, exactly the structure the renderer already draws.
 
 ## The calculus connection (why this might actually compute)
 
