@@ -8,3 +8,5 @@ bpe_cache.json
 # human eval data — never committed (personal scores/drawings)
 results/scores.json
 results/drawings/
+# local citation-verification PDFs (publisher copyright - never commit)
+pdfs/

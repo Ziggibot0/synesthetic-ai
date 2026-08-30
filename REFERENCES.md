@@ -30,10 +30,8 @@ natural human echolocation in early and late blind echolocation experts.
 
 Parise, C. V., & Spence, C. (2012). Audiovisual crossmodal
 correspondences and sound symbolism: A study using the implicit
-association test. *Experimental Brain Research*, 220(3), 317–329.
+association test. *Experimental Brain Research*, 220(3–4), 319–333.
 https://doi.org/10.1007/s00221-012-3140-6
-(page range from the Springer/PNAS citation records; verify against the
-article PDF if quoting precisely)
 
 Palmer, S. E., Schloss, K. B., Xu, Z., & Prado-León, L. R. (2013).
 Music–color associations are mediated by emotion. *Proceedings of the
@@ -89,26 +87,25 @@ captions for audios in the wild. *Proceedings of NAACL-HLT 2019*.
 https://aclanthology.org/N19-1011/
 
 Witthoft, N., & Winawer, J. (2013). Learning, memory, and synesthesia.
-*Psychological Science*, 24(11), 1858–1865.
-https://doi.org/10.1177/0956797613479524
+*Psychological Science*, 24(3), 258–265.
+https://doi.org/10.1177/0956797612452573
 
 ---
 
 ## Verification notes (2026-08-30)
 
-Entries marked with confidence notes, in the spirit of full disclosure:
-
-- All DOIs and author lists above were read off the live publisher/arXiv
-  pages during bibliography construction, not written from memory.
-- Two entries carry residual uncertainty, flagged here so a reader can
-  check them:
-  - **Witthoft & Winawer (2013)**: DOI and journal/volume taken from a
-    secondary citation trail (the MDPI paper's reference list and
-    ResearchGate); the primary APA page was not fetched. Verify before
-    quoting in a camera-ready manuscript.
+- Entries marked with confidence notes, in the spirit of full disclosure:
+  - All DOIs and author lists above were read off the live publisher/arXiv
+    pages during bibliography construction, not written from memory.
+  - **Fully verified (PDFs on hand, local `pdfs/` dir, NOT committed —
+    publisher copyright):** Witthoft & Winawer (2013) and Parise & Spence
+    (2012) — publisher PDFs downloaded 2026-08-30 and content
+    spot-checked (topic + self-citation of the paper's own DOI inside
+    the body). Crossref records used for the authoritative
+    volume/issue/pages.
   - **Wienand & Heckl (2021)**: authors and year confirmed on the arXiv
     abstract page; the figshare supplement (media files) was not checked.
-- The Abacus-embeddings paper's full author list is long; "et al."
+  - The Abacus-embeddings paper's full author list is long; "et al."
     truncation follows the arXiv listing order (McLeish et al., 2024).
 - Known corrections made during verification (the values previously in
   STORY.md were wrong and were fixed rather than propagated):
@@ -119,5 +116,11 @@ Entries marked with confidence notes, in the spirit of full disclosure:
   - Wienand & Heckl: two authors only (per arXiv API), not "et al."
   - Lample & Charton: ICLR 2020 (the arXiv preprint is dated 2019; the
     conference version is 2020 — STORY.md's citation was correct).
+  - Witthoft & Winawer: the DOI initially carried in this file
+    (10.1177/0956797613479524) was WRONG (it resolved to nothing on
+    Crossref); corrected to 10.1177/0956797612452573 with volume/issue
+    24(3), pages 258-265 from Crossref + the publisher PDF.
+  - Parise & Spence: page range corrected to 319-333 (issue 3-4) from the
+    Crossref record after the earlier draft used an unverified 317-329.
 - Elhage et al. (2022) has no DOI; cited by URL, as is standard for the
   Transformer Circuits Thread.
