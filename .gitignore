@@ -10,3 +10,4 @@ results/scores.json
 results/drawings/
 # local citation-verification PDFs (publisher copyright - never commit)
 pdfs/
+results/*.npz
