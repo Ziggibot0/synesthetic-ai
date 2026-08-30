@@ -70,6 +70,12 @@ at 1/100th the size.
   "paint as many cells as the thought needs", and the proposed
   voxel-native differential operators for a calculus task). Design
   only; implemented after the gate passes.
+- `docs/calc_gate.md` — THE NEXT EXPERIMENT (staged, not run): train a
+  matched transformer purely on synthetic calculus (f -> f' as voxel
+  fields), four pre-registered ablation arms with a param-matched token
+  baseline; PASS/kill gates written down. Calc-first by design: existence
+  proof for the substrate before any real-world data; the AudioCaps
+  binding gate follows after.
 
 ## Status (honest)
 
