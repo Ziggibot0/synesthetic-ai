@@ -58,7 +58,16 @@ Falsification: if C2's metrics stay at chance (structure-preservation
 rho ~ 0) under fair training, the analogue does nothing and this repo
 becomes a documented negative result. That is acceptable science. The
 first run (2026-08-30) is exactly that: a stable, non-collapsed,
-**semantically random** space — see `results/` and the lessons below.
+**semantically random** space — see the README's Status section and
+`results/`.
+
+A second, quieter risk is the "so what": colors that emerge but do
+nothing. Supervised color emergence was already demonstrated in 2018;
+emergence alone is not a contribution. The claim this repo must
+eventually earn is C3 — that the binding *does something* — via a
+downstream comparison against an architecturally identical model
+without the color substrate. That experiment is planned, not run, and
+every interim claim here stays modest until it exists.
 
 ## Grounding in the literature (why this isn't an aesthetic fancy)
 
@@ -84,12 +93,72 @@ first run (2026-08-30) is exactly that: a stable, non-collapsed,
   knowledge, represents uncertainty as multiple co-located hues rather
   than a mixture.
 
+## Related computational work — and the gap this repo aims at
+
+- **Supervised imitation.** "A Deep Learning Model of Perception in
+  Color-Letter Synesthesia" (MDPI, 2018) trained a GAN to colorize
+  achromatic letters using aggregate letter-to-color statistics
+  reported by a large synesthete cohort. It reproduces human-reported
+  mappings; it does not discover binding, and every color it produces
+  is supervised by human report.
+- **Art systems.** SynVAE and other "artificial synesthete" projects
+  (e.g. arXiv 2112.02953) translate between music and images through
+  hand-coded note-color maps. Evocative work, but the correspondence is
+  largely dictated by the designers and evaluated by none.
+- **Position papers.** SyneState (Zenodo, 2025) proposes inducing
+  "machine synesthesia" via constrained cross-modal mixing and states
+  outright that the required components are integration work; it
+  reports no empirical evaluation.
+- **Cross-modal correspondence psychology.** Parise & Spence (2012) and
+  Palmer & Schloss document that typical, non-synesthete perceivers
+  learn audio-visual and music-color correspondences from statistical
+  co-occurrence. This is precisely the mechanism this project bets on —
+  but that literature offers no computational model that *induces* such
+  binding in a learner and then tests it.
+
+The gap: to our knowledge, no work (1) induces color binding with zero
+human color priors, (2) represents the binding as an unblended SET
+(superposition, never mixture), and (3) evaluates the result against
+clinical-style criteria rather than impressions. That is this repo's
+lane. If a reviewer knows of a counterexample, the claims here are
+narrow enough to survive it.
+
+## What would count as machine synesthesia here (operational definition)
+
+Clinical synesthesia is not diagnosed by introspection; it is diagnosed
+by measurable criteria (Eagleman et al. 2006). We port that playbook:
+
+1. **Consistency (test-retest analog).** Same input yields the same
+   position + color-set across retraining runs with different seeds and
+   across paraphrases of the input.
+2. **Structure.** The binding tracks a reference semantic geometry —
+   structure-preservation rho above chance, with a shuffled-pair
+   control (`audiocaps_pairs.py`) as the null hypothesis.
+3. **Automaticity analog.** Binding lives in the forward pass, not in
+   a classifier head bolted on afterward.
+4. **No human prior.** No color is ever dictated. The hardcoded
+   `ANCHOR_WORDS` dictionary is scheduled for removal on this principle;
+   hand-painted human colors are EVAL data, never training data. A
+   model that replays a person's reported colors demonstrates
+   memorization, not synesthesia.
+
+A system meeting 1-2 with 3-4 in place earns the phrase *induced
+synesthesia-like binding*. It earns nothing about subjective
+experience — see below.
+
 ## What we are NOT claiming
 
 - We do not claim the model is conscious, or that this is consciousness,
   or that machine synesthesia is genuinely subjective. The claim is
   narrow: constrained multi-modal representations may carry reasoning-
   usable structure that unstructured vectors of the same size do not.
+- We do not aim to replicate the author's personal colors. His mapping
+  is one learned instantiation among many possible ones; a model that
+  copied it would only prove memorization. If the model's binding later
+  converges toward his, that is a finding to report — never a target
+  to optimize. This is why human-painted supervision was considered
+  and *rejected* (2026-08-30): the model gets its own synesthesia, or
+  the claim is empty.
 - We do not conflate this repo with our related fallacy-geometry work
   (Ziggibot0/embedding-vibes). That project borrows *from* the same
   mechanism zoo; they are separate projects with separate claims.

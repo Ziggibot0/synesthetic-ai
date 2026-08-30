@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>voxel space — synesthetic viewer</title>
+<style>
+  :root { --bg:#0b0e14; --fg:#d7dce5; --dim:#5a6474; --accent:#6a5cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; background:var(--bg); color:var(--fg);
+    font:16px/1.4 ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+    overflow:hidden; }
+  #canvasWrap { position:absolute; inset:0; }
+  #canvasWrap canvas { display:block; }
+  #panel { position:absolute; top:14px; left:14px; z-index:10;
+    width:320px; background:rgba(11,14,20,.86); border:1px solid #222a3a;
+    border-radius:12px; padding:14px; backdrop-filter:blur(6px); }
+  h1 { font-size:15px; letter-spacing:.02em; margin-bottom:10px; }
+  .sub { font-size:11px; color:var(--dim); margin-top:-6px; margin-bottom:10px; }
+  label { display:block; font-size:11px; color:var(--dim); margin:8px 0 3px; }
+  select, input[type=text] { width:100%; padding:7px 9px; border-radius:8px;
+    border:1px solid #2a3448; background:#131926; color:var(--fg); font-size:14px; }
+  input[type=text] { margin-bottom:6px; }
+  .row { display:flex; gap:6px; }
+  .row input { flex:1; }
+  button { padding:8px 14px; border:0; border-radius:8px; cursor:pointer;
+    background:var(--accent); color:#fff; font-weight:600; font-size:14px; }
+  button.ghost { background:#1b2334; color:var(--fg); }
+  #probeDisp { margin-top:10px; border-top:1px solid #222a3a; padding-top:10px;
+    font-size:12px; color:#c2cad9; word-break:break-word; min-height:44px; }
+  #scoreWrap { margin-top:10px; display:none; }
+  #scoreNum { color:var(--accent); font-weight:700; min-width:3ch; }
+  .chip { display:inline-block; background:#1b2334; border:1px solid #2a3448;
+    border-radius:20px; padding:2px 10px; font-size:11px; margin:2px 3px 0 0;
+    cursor:pointer; color:#a9b3c4; }
+  .chip:hover { background:#243046; }
+  #stats { position:absolute; bottom:14px; left:14px; z-index:10; font-size:11px;
+    color:var(--dim); background:rgba(11,14,20,.7); padding:6px 10px;
+    border-radius:8px; border:1px solid #222a3a; }
+  #empty { position:absolute; right:14px; top:14px; z-index:10; font-size:12px;
+    color:var(--dim); background:rgba(11,14,20,.7); padding:8px 12px;
+    border-radius:8px; border:1px solid #222a3a; max-width:230px; }
+  ::-webkit-scrollbar { width:8px; } ::-webkit-scrollbar-thumb { background:#263047; }
+</style>
+</head>
+<body>
+<div id="canvasWrap"></div>
+
+<div id="empty">Most of the space is empty — like yours. Simple thoughts light a
+small cluster; only really complex things pack objects together and superimpose.</div>
+
+<div id="panel">
+  <h1>Voxel Space Viewer</h1>
+  <div class="sub">colors flicker in time — superimposition, never a blend</div>
+
+  <label>setup</label>
+  <select id="setupSel">
+    <option value="free">free (VicReg only)</option>
+    <option value="distill">distill (pull toward nomic teacher)</option>
+    <option value="anchor">anchor (soft hue pull)</option>
+  </select>
+
+  <label>thought / probe</label>
+  <div class="row">
+    <input type="text" id="textInput" value="the feeling of certainty about a proof"
+           placeholder="type a thought, enter to run">
+    <button class="ghost" id="runBtn">run</button>
+  </div>
+  <div id="chips"></div>
+
+  <div id="probeDisp">enter a thought and hit run</div>
+
+  <div id="scoreWrap">
+    <label>how accurate is this 3D viz of the thought?&nbsp;
+      <span id="scoreNum">—</span><span style="color:var(--dim)">/ 1.0</span></label>
+    <input type="range" id="scoreSlider" min="0" max="1" step="0.05" value="0.5">
+    <div class="row" style="margin-top:6px">
+      <button style="flex:1" id="saveBtn">save score</button>
+      <button class="ghost" id="doneBtn" style="flex:1">done with this</button>
+    </div>
+    <div class="sub" style="margin-top:6px" id="scoreNote"></div>
+  </div>
+
+  <div id="drawWrap" style="margin-top:10px; border-top:1px solid #222a3a; padding-top:10px">
+    <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:var(--fg); cursor:pointer">
+      <input type="checkbox" id="drawMode" style="width:auto"> draw mode (paint what YOU see)
+    </label>
+    <div id="drawTools" style="display:none; margin-top:6px">
+      <div class="row" style="align-items:center">
+        <span id="swatch" style="width:22px;height:22px;border-radius:6px;border:1px solid #2a3448;flex:0 0 auto"></span>
+        <input type="range" id="hueR" min="0" max="360" value="120" style="flex:1">
+        <input type="range" id="satR" min="0" max="1" step="0.05" value="0.85" style="flex:1">
+        <input type="range" id="luxR" min="0.08" max="0.9" step="0.02" value="0.55" style="flex:1">
+      </div>
+      <div class="sub">click: paint · shift-click: add 2nd superimposed color · right-click: erase. drag still orbits.</div>
+      <div class="row" style="margin-top:6px">
+        <input type="text" id="drawName" placeholder="drawing name (e.g. certainty)">
+        <button class="ghost" id="saveDrawBtn">save</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button class="ghost" id="clearMine" style="flex:1">clear mine</button>
+        <button class="ghost" id="modelBtn" style="flex:1">re-show model cell</button>
+      </div>
+      <div class="sub" id="drawNote" style="margin-top:4px"></div>
+      <label>saved drawings</label>
+      <div id="savedChips"></div>
+    </div>
+  </div>
+</div>
+
+<div id="stats">cell: — · slots: — · models: free/distill/anchor</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+               "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+// ---------- scene ----------
+const wrap = document.getElementById('canvasWrap');
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+wrap.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 200);
+camera.position.set(12, 9, 14);
+camera.lookAt(0,0,0);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x0a0d14, 0.9));
+scene.add(new THREE.AmbientLight(0x404860, 0.6));
+const dir = new THREE.DirectionalLight(0xffffff, 1.2); dir.position.set(5,10,7); scene.add(dir);
+
+// faint grid wireframe: 8^3
+const GRID=8, CELL=1.2, ORIG=-GRID*CELL/2 + CELL/2;
+const gridGeo = new THREE.BoxGeometry(CELL*GRID, CELL*GRID, CELL*GRID);
+const gridEdges = new THREE.EdgesGeometry(gridGeo);
+const gridWire = new THREE.LineSegments(gridEdges,
+  new THREE.LineBasicMaterial({ color:0x2a3448 }));
+scene.add(gridWire);
+
+// group that holds all voxel cells
+const cells = new THREE.Group();
+scene.add(cells);
+
+// ---- coordinate system: origin marked, positive & negative axes ----
+const AXIS = 5.5;           // a bit past the grid (half-extent = 4.8)
+function makeLabel(text, color){
+  const d = document.createElement('div');
+  d.textContent = text;
+  d.style.color = color||'#e8ecf4';
+  d.style.font = '600 12px ui-sans-serif, system-ui, sans-serif';
+  d.style.textShadow = '0 0 5px #000';
+  d.style.background = 'rgba(10,13,20,.55)';
+  d.style.padding = '0 5px';
+  d.style.borderRadius = '4px';
+  d.style.whiteSpace = 'nowrap';
+  d.style.pointerEvents = 'none';
+  const o = new CSS2DObject(d);
+  scene.add(o);
+  return o;
+}
+function mkAxis(v, color){
+  const g = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3().copy(v).multiplyScalar(-AXIS),
+    new THREE.Vector3().copy(v).multiplyScalar(AXIS)]);
+  scene.add(new THREE.Line(g, new THREE.LineBasicMaterial({color, transparent:true, opacity:0.55})));
+}
+mkAxis(new THREE.Vector3(1,0,0), 0xff5555);   // X = red
+mkAxis(new THREE.Vector3(0,1,0), 0x55ff55);   // Y = green
+mkAxis(new THREE.Vector3(0,0,1), 0x5599ff);   // Z = blue
+
+// origin marker + labels
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(0.12,16,12),
+  new THREE.MeshBasicMaterial({color:0xffffff})));
+makeLabel('0', 0xffffff).position.set(0.28,0.28,0.28);
+makeLabel('+X', 0xff8080).position.set(AXIS,0,0);
+makeLabel('-X', 0xff8080).position.set(-AXIS,0,0);
+makeLabel('+Y', 0x80ff80).position.set(0,AXIS,0);
+makeLabel('-Y', 0x80ff80).position.set(0,-AXIS,0);
+makeLabel('+Z', 0x80b8ff).position.set(0,0,AXIS);
+makeLabel('-Z', 0x80b8ff).position.set(0,0,-AXIS);
+
+// numeric ticks (multiples of CELL) on all three axes, both directions
+const TICKCOL='#9aa7b8';
+for(let i=1;i<=4;i++){
+  const c=(i*CELL).toFixed(1); const s=(i*CELL);
+  makeLabel('+'+c, TICKCOL).position.set(s,-0.42,0);
+  makeLabel('-'+c, TICKCOL).position.set(-s,-0.42,0);
+  makeLabel('+'+c, TICKCOL).position.set(0, s,-0.42);
+  makeLabel('-'+c, TICKCOL).position.set(0,-s,-0.42);
+  makeLabel('+'+c, TICKCOL).position.set(-0.42,0, s);
+  makeLabel('-'+c, TICKCOL).position.set(-0.42,0,-s);
+}
+
+// label renderer (HTML labels on top of the canvas)
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(innerWidth, innerHeight);
+labelRenderer.domElement.style.position='absolute';
+labelRenderer.domElement.style.top='0';
+labelRenderer.domElement.style.pointerEvents='none';
+wrap.appendChild(labelRenderer.domElement);
+
+// orbit control (simple manual)
+let theta=0.6, phi=0.5, rad=20, drag=null;
+renderer.domElement.addEventListener('pointerdown', e=>{drag={x:e.clientX,y:e.clientY};});
+addEventListener('pointermove', e=>{ if(!drag)return;
+  theta += (e.clientX-drag.x)*0.005; phi -= (e.clientY-drag.y)*0.005;
+  phi=Math.max(0.1,Math.min(1.4,phi)); drag={x:e.clientX,y:e.clientY}; });
+addEventListener('pointerup', ()=>{drag=null;});
+addEventListener('wheel', e=>{ rad=Math.max(12,Math.min(40, rad+e.deltaY*0.02)); e.preventDefault(); }, {passive:false});
+
+// ---------- state ----------
+let curCell=null;                 // active cell index (model's choice)
+const flickMap = new Map();       // cell -> [{h,s,l},...] (hard-swap colors)
+let modelState = null;            // {vox, slots} — the model's current answer
+const drawn = new Map();          // "x,y,z" -> [[h,s,l],[h,s,l]?] — your drawing
+const cellObjs=[];                // {pos, box, mat}
+
+// build the empty voxels (mostly clear space, like the real thing)
+for(let x=0;x<GRID;x++)for(let y=0;y<GRID;y++)for(let z=0;z<GRID;z++){
+  const m = new THREE.MeshBasicMaterial({ color:0x1a2233, transparent:true, opacity:0.04 });
+  const geo = new THREE.BoxGeometry(CELL*0.92, CELL*0.92, CELL*0.92);
+  const box = new THREE.Mesh(geo, m);
+  box.position.set(ORIG+x*CELL, ORIG+y*CELL, ORIG+z*CELL);
+  cells.add(box);
+  cellObjs.push({ pos:[x,y,z], box, mat:m });
+}
+
+// static outline marking the active cell's position
+const activeOutline = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(CELL*1.02, CELL*1.02, CELL*1.02)),
+  new THREE.LineBasicMaterial({ color:0xffffff, transparent:true, opacity:0.35 }));
+activeOutline.visible=false;
+scene.add(activeOutline);
+
+function hslColor(hue, sat, lux){
+  // the model's own HSL: lightness IS salience, so use it unmodified
+  return new THREE.Color().setHSL(
+    (((hue%360)+360)%360)/360, sat, Math.max(0.08, Math.min(0.9, lux)));
+}
+
+function applySlotColor(cell, slots){
+  if(!slots || !slots.length) return;
+  flickMap.set(cell, slots.slice(0,2));   // 2-color cap: the superimposed set
+  cell.mat.opacity = 0.92;
+}
+
+function applySpace(){
+  // single source of truth: reset, then draw model cell + your manual cells
+  flickMap.clear();
+  cellObjs.forEach(c=>{ c.mat.color.setHex(0x1a2233); c.mat.opacity=0.04; });
+  activeOutline.visible = false;
+  if(modelState){
+    const t = cellObjs.find(c=>c.pos[0]===modelState.vox[0] && c.pos[1]===modelState.vox[1] && c.pos[2]===modelState.vox[2]);
+    if(t){
+      activeOutline.position.copy(t.box.position);
+      activeOutline.visible = true;
+      const ms = (modelState.slots||[]).slice(0,2).map(s=>({h:s.hue, s:s.sat, l:s.lux}));
+      if(ms.length) applySlotColor(t, ms);
+    }
+  }
+  drawn.forEach((slots, key)=>{
+    const [x,y,z] = key.split(',').map(Number);
+    const c = cellObjs.find(o=>o.pos[0]===x && o.pos[1]===y && o.pos[2]===z);
+    if(c) applySlotColor(c, slots.map(a=>({h:a[0], s:a[1], l:a[2]})));
+  });
+}
+
+// superimposition in time: each colored cell hard-swaps between its colors
+const t0 = performance.now();
+function animate(){
+  requestAnimationFrame(animate);
+  const t = (performance.now()-t0)/1000;   // seconds
+  const FLICK_S = 0.55;                    // per color; hard swap, no crossfade
+  flickMap.forEach((f, cell)=>{
+    const s = f[Math.floor(t/FLICK_S) % f.length];
+    cell.mat.color.copy(hslColor(s.h, s.s, s.l));
+  });
+  // camera orbit ease
+  camera.position.set(
+    rad*Math.sin(phi)*Math.cos(theta),
+    rad*Math.cos(phi)*1.1+2,
+    rad*Math.sin(phi)*Math.sin(theta));
+  camera.lookAt(0,0.5,0);
+  renderer.render(scene,camera);
+  labelRenderer.render(scene,camera);
+}
+animate();
+
+// ---------- app logic ----------
+const $ = id=>document.getElementById(id);
+const setupSel=$('setupSel'), textInput=$('textInput'),
+      probeDisp=$('probeDisp'), empty=$('empty');
+const chips=['the feeling of certainty about a proof','a warm red rose',
+  'two plus two equals four','the color green','a long tangled argument',
+  'starlight','the taste of honey on rye bread'];
+chips.forEach(c=>{
+  const el=document.createElement('span'); el.className='chip'; el.textContent=c;
+  el.onclick=()=>{ textInput.value=c; run(); };
+  $('chips').appendChild(el);
+});
+
+let lastQuery='';
+
+async function run(){
+  const text=textInput.value.trim(); if(!text)return;
+  const setup=setupSel.value;
+  lastQuery={setup,text};
+  try{
+    const r=await fetch(`/query?setup=${encodeURIComponent(setup)}&text=${encodeURIComponent(text)}`);
+    const d=await r.json();
+    if(d.error) throw new Error(d.error);
+    curCell=d.index;
+    modelState={vox:d.cell, slots:d.slots};
+    applySpace();
+    // signed, origin-centered coordinates of the lit cell
+    const cxyz = d.cell.map(c=>((c*CELL)-(GRID*CELL/2)).toFixed(1));
+    probeDisp.innerHTML=`<b>#${curCell}</b> @ (${cxyz.join(', ')}) — ${text}
+      <br><span style="color:var(--dim);font-size:11px">${
+        (d.slots.length?d.slots.slice(0,2).map(s=>`h${s.hue},s${s.sat},l${s.lux},a${s.act}`).join(' · ')
+        :'no active color — clear space')}</span>`;
+    $('stats').innerHTML=`cell: #${curCell} @ (${cxyz.join(', ')}) · slots: ${d.slots.length} · ${setup}`;
+    empty.style.display='none';
+    scoreUI(d);
+  }catch(e){ probeDisp.textContent='error: '+e.message; }
+}
+
+function scoreUI(d){
+  const w=$('scoreWrap'); w.style.display='block';
+  $('scoreNote').textContent='compare: free · distill · anchor, then score. your 0-1 is the ground truth.';
+  const prev = window.__scores&&window.__scores[lastQuery.text];
+  $('scoreNum').textContent = prev!==undefined?prev.toFixed(2):'—';
+  if(prev!==undefined) $('scoreSlider').value=prev;
+}
+
+async function loadScores(){ try{ const r=await fetch('/scores'); window.__scores=await r.json(); }catch(e){} }
+loadScores();
+
+$('runBtn').onclick=run;
+
+// ---------- draw mode: paint what YOU see ----------
+const drawOn = $('drawMode');
+const hueR=$('hueR'), satR=$('satR'), luxR=$('luxR'), swatch=$('swatch');
+const rayc = new THREE.Raycaster(), ndc = new THREE.Vector2();
+function brush(){
+  const c = new THREE.Color().setHSL(hueR.value/360, +satR.value, +luxR.value);
+  swatch.style.background = '#'+c.getHexString();
+  return [+hueR.value, +satR.value, +luxR.value];
+}
+hueR.oninput=brush; satR.oninput=brush; luxR.oninput=brush; brush();
+
+function pick(e){
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+  rayc.setFromCamera(ndc, camera);
+  const hits = rayc.intersectObjects(cellObjs.map(c=>c.box));
+  return hits.length ? cellObjs.find(c=>c.box===hits[0].object) : null;
+}
+let downPx=null;
+renderer.domElement.addEventListener('pointerdown', e=>{ downPx=[e.clientX,e.clientY]; });
+addEventListener('pointerup', e=>{
+  if(!downPx) return;
+  const moved = Math.hypot(e.clientX-downPx[0], e.clientY-downPx[1]);
+  downPx=null;
+  if(!drawOn.checked) return;                 // draw mode off: plain orbit
+  if(moved > 6) return;                       // that was an orbit drag
+  const hit = pick(e); if(!hit) return;
+  const key = hit.pos.join(',');
+  if(e.button === 0){
+    const cur = drawn.get(key) || [];
+    if(e.shiftKey && cur.length < 2){ cur.push(brush()); drawn.set(key, cur); }
+    else drawn.set(key, [brush()]);           // fresh paint resets the set
+    applySpace();
+  } else if(e.button === 2){ drawn.delete(key); applySpace(); }
+});
+addEventListener('contextmenu', e=>{ if(drawOn.checked) e.preventDefault(); });
+drawOn.addEventListener('change', e=>{
+  $('drawTools').style.display = e.target.checked ? 'block' : 'none';
+  renderer.domElement.style.cursor = e.target.checked ? 'crosshair' : 'grab'; });
+$('clearMine').onclick = ()=>{ drawn.clear(); applySpace(); };
+$('modelBtn').onclick = ()=>{ applySpace(); };   // redraw stored model state
+
+async function refreshSaved(){
+  try{
+    const names = await (await fetch('/drawings')).json();
+    const el = $('savedChips'); el.innerHTML='';
+    names.forEach(n=>{
+      const s = document.createElement('span'); s.className='chip'; s.textContent=n;
+      s.onclick = async ()=>{
+        drawn.clear();
+        const d = await (await fetch('/drawing?name='+encodeURIComponent(n))).json();
+        const cells = d.cells || d;                 // new format wraps cells
+        Object.entries(cells).forEach(([k,v])=>drawn.set(k,v));
+        applySpace();
+      };
+      el.appendChild(s);
+    });
+  }catch(e){}
+}
+refreshSaved();
+$('saveDrawBtn').onclick = async ()=>{
+  const name = ($('drawName').value||'').trim();
+  if(!name || !drawn.size){ $('drawNote') && ($('drawNote').textContent='need a name + at least one cell'); return; }
+  await fetch('/draw', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({name, text: lastQuery.text||'', cells: Object.fromEntries(drawn)})});
+  $('drawNote').textContent = `saved "${name}" (${drawn.size} cells)`;
+  refreshSaved();
+};
+textInput.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
+setupSel.addEventListener('change',run);
+
+$('saveBtn').onclick=async()=>{
+  const v=parseFloat($('scoreSlider').value);
+  $('scoreNum').textContent=v.toFixed(2);
+  const key=`${setupSel.value}::${lastQuery.text}`;
+  const payload={}; payload[key]=v;
+  window.__scores=window.__scores||{};
+  Object.assign(window.__scores,payload);
+  const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)});
+  $('scoreNote').textContent=`saved ${v.toFixed(2)} — ${key}`;
+};
+$('doneBtn').onclick=()=>{ $('scoreWrap').style.display='none'; };
+
+addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);
+  labelRenderer.setSize(innerWidth,innerHeight); });
+
+run();
+</script>
+</body>
+</html>

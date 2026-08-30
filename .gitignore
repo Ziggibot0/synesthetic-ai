@@ -5,3 +5,6 @@ results/*.npy
 bpe_cache.json
 *.log
 !results/*.json
+# human eval data — never committed (personal scores/drawings)
+results/scores.json
+results/drawings/
