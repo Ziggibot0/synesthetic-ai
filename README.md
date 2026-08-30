@@ -10,6 +10,9 @@ Independent project. Related work (fallacy geometry, JEPA trajectories)
 lives in Ziggibot0/embedding-vibes; that project's data is reused here for
 evaluation only.
 
+**Read this first:** [STORY.md](STORY.md) — why this project exists, the
+hypothesis in falsifiable form, and the literature grounding.
+
 ## The bet
 
 Representation determines capability (Abacus embeddings for arithmetic,
@@ -53,6 +56,14 @@ at 1/100th the size.
   diagnosis scripts, and the failure narrative are kept on purpose.
 - Overnight triple run (free/distill/anchor, 60 epochs) + probe results:
   `results/probe_results.json` (per-class AUC, model vs token baseline).
+- Mission-level verdict from `reps_*.npy` + `rep_structure` analysis:
+  free/distill spaces are non-collapsed but semantically **random**
+  (structure-preservation rho vs nomic = -0.000/+0.002); the anchor
+  variant **collapsed** (mean rep cosine 0.995). Diagnosis: invariance
+  pairs define what structure emerges — weak pairs (article vs
+  content-masked) yield arbitrary structure. Next iteration trains on
+  re-rendering pairs (same claim, different serializations) and grades
+  on structure preservation, not classification.
 - Known surface-form confound: the fallacy dataset leaks rhetoric — a
   token-count baseline hits AUC 0.61-0.91. Any claim from this data needs
   the paraphrase-controlled version. This is stated up front on purpose.
