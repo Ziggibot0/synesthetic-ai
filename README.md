@@ -65,6 +65,11 @@ at 1/100th the size.
   staged not run: same-clip vs shuffled AudioCaps caption pairs;
   pre-registered PASS (rho >= 0.15 AND delta >= 0.10) / KILL (rho < 0.05)
   verdict written to `results/pairs_verdict.json`.
+- `docs/voxel_spec_v2.md` — v2 representation design (density +
+  translucency dims, occupancy-field output with variable-length
+  "paint as many cells as the thought needs", and the proposed
+  voxel-native differential operators for a calculus task). Design
+  only; implemented after the gate passes.
 
 ## Status (honest)
 
