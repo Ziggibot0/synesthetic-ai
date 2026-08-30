@@ -101,6 +101,38 @@ re-matched before the gates are read.
 G1 uses test_in rel_err < 0.15. G2 uses test_in AND test_extrap rel_err
 (A <= D on both). G3 uses test_in rel_err (A < B).
 
+## Arm E — corrected color representation (added 2026-08-30)
+
+The A-vs-B result (A=1.19, B=0.10) showed the NAIVE color encoding
+(hue as raw scalar, brightness==density, additive projections) actively
+hurts convergence. Sean's diagnosis: "the color itself isn't the issue
+since it helps me. the way the color is represented is the issue."
+
+Arm E tests that hypothesis with the corrected representation:
+  * hue as (cos, sin) 2D embedding — respects circularity (359° and 1°
+    are adjacent in color space but 358 apart as scalars; a linear
+    projection cannot represent the wrap)
+  * brightness kept SEPARATE from density — brightness = attention
+    (what's salient now), density = established/heavy (what's been
+    accumulating); "heavy isn't always the center of attention"
+  * alpha = sign of f — proper feature (hue/brightness/density all lose
+    the sign, which matters for the derivative)
+  * features CONCATENATED into one per-position vector and projected
+    once (e_proj: 6->H) instead of added additively into the residual
+    stream — so the network learns interactions instead of canceling
+    redundant contributions
+
+Arm E is param-matched to A exactly (10,675,217 params). It trains on a
+SEPARATE dataset (calc_data_v2.npz, same generator + seed, plus the
+hue_cos/hue_sin keys) so the running A/B/C/D matrix is not disturbed.
+
+Gates (added to calc_report.py):
+  E1 corrected-color computes:  E test_in rel_err < 0.15
+  E2 corrected-color beats naive A:  E < A
+  E3 corrected-color beats density-only B:  E < B
+  E2 PASS => the naive encoding was the problem, not color itself.
+  E3 PASS => corrected color earns its keep over density-only.
+
 ## Monitoring / checkpointing (the "no black box" contract)
 
 Every arm run writes, updated EVERY epoch:

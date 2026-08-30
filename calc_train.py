@@ -53,8 +53,8 @@ def set_seed(s):
     random.seed(s); np.random.seed(s); torch.manual_seed(s)
 
 
-def load_data():
-    p = os.path.join(OUT, "calc_data.npz")
+def load_data(path=None):
+    p = path or os.path.join(OUT, "calc_data.npz")
     d = np.load(p)
     def split(prefix):
         return {k[len(prefix):]: d[k] for k in d.files if k.startswith(prefix)}
@@ -67,6 +67,8 @@ def field_batch(d, idx, arm):
         "value_bin": torch.tensor(d["value_bin"][idx], dtype=torch.long),
         "density": torch.tensor(d["density"][idx], dtype=torch.float32),
         "hue": torch.tensor(d["hue"][idx], dtype=torch.float32),
+        "hue_cos": torch.tensor(d["hue_cos"][idx], dtype=torch.float32),
+        "hue_sin": torch.tensor(d["hue_sin"][idx], dtype=torch.float32),
         "brightness": torch.tensor(d["brightness"][idx], dtype=torch.float32),
         "alpha": torch.tensor(d["alpha"][idx], dtype=torch.float32),
         "occupancy": torch.tensor((d["density"][idx] > 0).astype(np.float32)),
@@ -240,7 +242,7 @@ def train(model, tr, val, tx, arm, epochs, lr, batch, seed, ckpt_every, is_token
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--arm", required=True, choices=["A", "B", "C", "D"])
+    ap.add_argument("--arm", required=True, choices=["A", "B", "C", "D", "E"])
     ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--batch", type=int, default=128)
@@ -249,14 +251,16 @@ def main():
                     help="save resumable checkpoint every N epochs")
     ap.add_argument("--resume", action="store_true",
                     help="resume from results/calc_<arm>_last.pt if present")
+    ap.add_argument("--data", default=None,
+                    help="path to a specific calc_data.npz (default: results/calc_data.npz)")
     a = ap.parse_args()
 
-    tr, ti, tx = load_data()
+    tr, ti, tx = load_data(a.data)
     os.makedirs(OUT, exist_ok=True)
     t0 = time.time()
 
     try:
-        if a.arm in ("A", "B", "C"):
+        if a.arm in ("A", "B", "C", "E"):
             model = cm.FieldModel(a.arm).to(DEVICE)
             model, re_in, ex_in, re_x, ex_x = train(
                 model, tr, ti, tx, a.arm, a.epochs, a.lr, a.batch, a.seed,

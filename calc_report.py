@@ -31,17 +31,17 @@ def load(arm):
 
 
 def main():
-    r = {a: load(a) for a in "ABCD"}
+    r = {a: load(a) for a in "ABCDE"}
     missing = [a for a, v in r.items() if v is None]
     if missing:
         print(f"MISSING arms: {missing} — run calc_train.py for each first.")
         return
 
-    A, B, C, D = r["A"], r["B"], r["C"], r["D"]
+    A, B, C, D, E = r["A"], r["B"], r["C"], r["D"], r["E"]
     print("=" * 60)
     print("CALC GATE — pre-registered verdicts (docs/calc_gate.md)")
     print("=" * 60)
-    for a in "ABCD":
+    for a in "ABCDE":
         v = r[a]
         print(f"  arm {a}: params={v['n_params']:,}  "
               f"test_in rel_err={v['test_in_rel_err']:.4f} exact={v['test_in_exact']:.4f}  "
@@ -52,11 +52,18 @@ def main():
           and A["test_extrap_rel_err"] <= D["test_extrap_rel_err"])
     g3 = A["test_in_rel_err"] < B["test_in_rel_err"]
     d_ok = D["test_in_rel_err"] < 0.15
+    # arm E: corrected color representation (Sean's 2026-08-30 revelations)
+    e_ok = E["test_in_rel_err"] < 0.15
+    e_beats_a = E["test_in_rel_err"] < A["test_in_rel_err"]
+    e_beats_b = E["test_in_rel_err"] < B["test_in_rel_err"]
 
     print("-" * 60)
     print(f"G1 compute (A rel_err < 0.15):        {'PASS' if g1 else 'FAIL'}  ({A['test_in_rel_err']:.4f})")
     print(f"G2 beat control (A <= D, in+extrap):  {'PASS' if g2 else 'FAIL'}")
     print(f"G3 color pays (A < B):                {'PASS' if g3 else 'FAIL'}  ({A['test_in_rel_err']:.4f} vs {B['test_in_rel_err']:.4f})")
+    print(f"E1 corrected-color computes (<0.15):  {'PASS' if e_ok else 'FAIL'}  ({E['test_in_rel_err']:.4f})")
+    print(f"E2 corrected-color beats naive A:     {'PASS' if e_beats_a else 'FAIL'}  ({E['test_in_rel_err']:.4f} vs {A['test_in_rel_err']:.4f})")
+    print(f"E3 corrected-color beats density-only B: {'PASS' if e_beats_b else 'FAIL'}  ({E['test_in_rel_err']:.4f} vs {B['test_in_rel_err']:.4f})")
     print("-" * 60)
     if g1 and g2:
         print("VERDICT: PASS — the voxel substrate computes, and beats the")
@@ -68,6 +75,10 @@ def main():
     else:
         print("VERDICT: INCONCLUSIVE — see gates. G3 alone failing is a scoped")
         print("         negative (color is decoration in the calc setting), not a kill.")
+    print()
+    print("Arm E (corrected color) is the treatment for the A-vs-B finding:")
+    print("  if E2 PASS, the naive color encoding was the problem, not color itself.")
+    print("  if E3 PASS, corrected color beats density-only — color earns its keep.")
 
 
 if __name__ == "__main__":

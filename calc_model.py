@@ -91,22 +91,32 @@ class _Block(nn.Module):
 
 
 class FieldModel(nn.Module):
-    """Arms A/B/C: encoder over 32 positions, per-position field head."""
+    """Arms A/B/C: encoder over 32 positions, per-position field head.
+
+    Arm E (corrected color, per Sean's 2026-08-30 revelations):
+      - hue as (cos, sin) 2D embedding (respects circularity)
+      - brightness kept SEPARATE from density (attention vs established)
+      - alpha = sign of f (proper feature)
+      - features CONCATENATED into one per-position vector and projected
+        once, instead of added additively into the residual stream
+    """
 
     def __init__(self, arm):
         super().__init__()
-        assert arm in ("A", "B", "C"), arm
+        assert arm in ("A", "B", "C", "E"), arm
         self.arm = arm
         self.pos = nn.Parameter(torch.randn(N_X, H) * 0.02)
         self.value_emb = nn.Embedding(N_VALUE_BINS, H)
         # scalar feature projectors (only the ones the arm uses)
         self.scalar = nn.Linear(1, H)
+        # arm E: single projection over the concatenated feature vector
+        self.e_proj = nn.Linear(6, H)   # density, hue_cos, hue_sin, brightness, alpha, occupancy
         self.layers = nn.ModuleList([_Block(H, FFN, N_HEADS) for _ in range(6)])
         self.head_bin = nn.Linear(H, N_VALUE_BINS)
         self.head_dens = nn.Linear(H, 1)
 
     def n_features(self):
-        return {"A": 5, "B": 2, "C": 2}[self.arm]
+        return {"A": 5, "B": 2, "C": 2, "E": 6}[self.arm]
 
     def forward(self, x):
         """x: dict of per-position feature arrays, each (B, N_X)."""
@@ -120,6 +130,13 @@ class FieldModel(nn.Module):
             h = h + self.scalar(x["alpha"].unsqueeze(-1))
         if self.arm == "C":
             h = h + self.scalar(x["occupancy"].unsqueeze(-1))
+        if self.arm == "E":
+            # concatenate corrected color features, project once
+            feats = torch.stack([
+                x["density"], x["hue_cos"], x["hue_sin"],
+                x["brightness"], x["alpha"], x["occupancy"],
+            ], dim=-1)                       # (B, N_X, 6)
+            h = h + self.e_proj(feats)
         for layer in self.layers:
             h = layer(h)
         bin_logits = self.head_bin(h)          # (B, N_X, 16)

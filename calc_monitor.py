@@ -37,7 +37,7 @@ def snapshot():
     print(f"{'arm':<4}{'status':<10}{'epoch':<8}{'loss':<8}{'val_rel':<9}"
           f"{'val_ex':<8}{'extrap':<9}{'best':<9}{'elapsed':<10}{'eta':<8}")
     print("-" * 78)
-    for a in "ABCD":
+    for a in "ABCDE":
         p = os.path.join(OUT, f"calc_{a}_status.json")
         if not os.path.exists(p):
             print(f"{a:<4}{'not started':<10}")
@@ -60,13 +60,13 @@ def snapshot():
 
 def gates():
     r = {}
-    for a in "ABCD":
+    for a in "ABCDE":
         p = os.path.join(OUT, f"calc_{a}.json")
         if os.path.exists(p):
             with open(p) as f:
                 r[a] = json.load(f)
-    if len(r) < 4:
-        print(f"Gates: need all 4 final results (have {len(r)}/4). "
+    if len(r) < 5:
+        print(f"Gates: need all 5 final results (have {len(r)}/5). "
               f"Run calc_report.py when complete.")
         return
     A, B, D = r["A"], r["B"], r["D"]

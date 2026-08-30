@@ -91,6 +91,8 @@ def voxelize(expr, x_lo, x_hi):
     density = np.array([sig2(abs(v)) for v in fn])
     fine_value = np.array([sig2(v) for v in fn])
     hue = np.array([sig2((v + 1) / 2 * 360) for v in fn])
+    hue_cos = np.array([sig2(np.cos(np.deg2rad((v + 1) / 2 * 360))) for v in fn])
+    hue_sin = np.array([sig2(np.sin(np.deg2rad((v + 1) / 2 * 360))) for v in fn])
     brightness = np.array([sig2(abs(v)) for v in fn])
     alpha = np.array([1.0 if v >= 0 else 0.5 for v in fn])
     # targets (derivative field)
@@ -99,7 +101,8 @@ def voxelize(expr, x_lo, x_hi):
     deriv_value = np.array([sig2(v) for v in fpn])   # continuous, for metrics + arm D
     return dict(
         value_bin=value_bin, density=density, fine_value=fine_value,
-        hue=hue, brightness=brightness, alpha=alpha,
+        hue=hue, hue_cos=hue_cos, hue_sin=hue_sin,
+        brightness=brightness, alpha=alpha,
         deriv_bin=deriv_bin, deriv_density=deriv_density, deriv_value=deriv_value,
     )
 
@@ -123,10 +126,12 @@ def main():
     ap.add_argument("--n-train", type=int, default=20000)
     ap.add_argument("--n-test", type=int, default=4000)
     ap.add_argument("--seed", type=int, default=1337)
+    ap.add_argument("--out", default="calc_data.npz",
+                    help="output filename in results/ (default calc_data.npz)")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     train, test_in, test_extrap = generate(a.n_train, a.n_test, a.seed)
-    path = os.path.join(OUT, "calc_data.npz")
+    path = os.path.join(OUT, a.out)
     np.savez(path,
              **{f"tr_{k}": v for k, v in train.items()},
              **{f"ti_{k}": v for k, v in test_in.items()},
