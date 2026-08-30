@@ -101,6 +101,30 @@ re-matched before the gates are read.
 G1 uses test_in rel_err < 0.15. G2 uses test_in AND test_extrap rel_err
 (A <= D on both). G3 uses test_in rel_err (A < B).
 
+## Monitoring / checkpointing (the "no black box" contract)
+
+Every arm run writes, updated EVERY epoch:
+
+  results/calc_<arm>_status.json   live status: epoch, loss, val/exact,
+                                   extrap, best, elapsed, ETA, device.
+                                   On crash it is written with
+                                   status="failed" + the error, so a dead
+                                   run is never silent.
+  results/calc_<arm>_last.pt       resumable checkpoint (model + optimizer
+                                   + epoch + best), saved every
+                                   --ckpt-every epochs and at the end.
+                                   Resume with --resume.
+  results/calc_<arm>.pt           final checkpoint (on completion).
+
+Watch any time:
+  cat results/calc_A_status.json
+  py -3.12 calc_monitor.py          # one snapshot
+  py -3.12 calc_monitor.py --watch  # refresh every 10s
+
+Per-epoch console lines carry loss + val/extrap metrics + ETA; per-batch
+lines every 25% of an epoch. A run is never a black box: you can see
+where it is, how it's doing, and how long it has left at any moment.
+
 ## Reproducibility
 
   * calc_data.py --seed 1337 is deterministic (numpy default_rng).
