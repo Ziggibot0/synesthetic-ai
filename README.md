@@ -13,7 +13,8 @@ for evaluation only, and is being fully decoupled from training
 
 **Read this first:** [STORY.md](STORY.md) — why this project exists, the
 hypothesis in falsifiable form, the operational definition of machine
-synesthesia this repo tests, and the literature grounding.
+synesthesia this repo tests, and the literature grounding. Full
+bibliography with verified sources: [REFERENCES.md](REFERENCES.md).
 
 ## The bet
 

@@ -71,17 +71,18 @@ every interim claim here stays modest until it exists.
 
 ## Grounding in the literature (why this isn't an aesthetic fancy)
 
-- **Standardized measurement exists.** Eagleman et al. (2006) built a
-  134-item synesthesia battery precisely so self-reported synesthesia
-  could be *tested* rather than taken on faith. This project applies the
-  same posture: a private experience becomes a measurable claim.
+- **Standardized measurement exists.** Eagleman, Kagan, Nelson, Sagaram &
+  Sarma (2007) built a freely accessible synesthesia test battery
+  precisely so self-reported synesthesia could be *tested* rather than
+  taken on faith. This project applies the same posture: a private
+  experience becomes a measurable claim.
 - **Cross modal structure is real computation.** Ramachandran &
   Hubbard (2001): ~10% of people have explicit spatial number forms, and
   grapheme-color synesthesia correlates with *measurably* better
   arithmetic and discrimination performance — the overlay is
   functional, not decorative.
-- **Human echolocation works.** Thaler, Arnold, Goodale & Kish (2011)
-  showed blind humans parse room geometry from mouth-click echoes, with
+- **Human echolocation works.** Thaler, Arnott & Goodale (2011) showed
+  blind humans parse room geometry from mouth-click echoes, with
   visual-cortex activation. A "sensory shape of the room from sound" is
   literally documented, not a metaphor. (My sound-shape sense is the
   congenital analogue.)
@@ -94,6 +95,10 @@ every interim claim here stays modest until it exists.
   than a mixture.
 
 ## Related computational work — and the gap this repo aims at
+
+*(Full bibliographic details for every work cited in this document live
+in [REFERENCES.md](REFERENCES.md), verified against primary sources on
+2026-08-30.)*
 
 - **Supervised imitation.** "A Deep Learning Model of Perception in
   Color-Letter Synesthesia" (MDPI, 2018) trained a GAN to colorize
@@ -126,7 +131,7 @@ narrow enough to survive it.
 ## What would count as machine synesthesia here (operational definition)
 
 Clinical synesthesia is not diagnosed by introspection; it is diagnosed
-by measurable criteria (Eagleman et al. 2006). We port that playbook:
+by measurable criteria (Eagleman et al. 2007). We port that playbook:
 
 1. **Consistency (test-retest analog).** Same input yields the same
    position + color-set across retraining runs with different seeds and
