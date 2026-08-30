@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "synesthetic-ai: voxel semantic spaces with superimposed color-sets"
+authors:
+  - alias: Ziggibot0
+type: dataset
+keywords:
+  - representation learning
+  - synesthesia-inspired models
+  - interpretability
+  - self-supervised learning
+license: MIT
+repository-code: "https://github.com/Ziggibot0/synesthetic-ai"
+abstract: >-
+  An experiment in structured semantic representation: text mapped to a
+  position in a small voxel grid carrying a SET of colors (HSL, never
+  mixed), with brightness as salience and multi-color superposition as
+  uncertainty. We test whether such baked-in structure induces geometry
+  that an equal-sized continuous embedding lacks, measured by
+  structure preservation against a reference embedding space.
