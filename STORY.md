@@ -4,26 +4,31 @@
 
 I have synesthesia. Specifics, all perceptual rather than interpretive:
 
-- **Sound is space.** I see a rough shape of the room I'm in from ambient
+- **Sound is seen as colors in space.** I see a rough shape of the room I'm in from ambient
   sound alone — lights off, no problem. Echoes have outlines.
-- **Feeling is color.** My own physical and emotional states appear as
+- **Feeling is color in space.** My own physical and emotional states appear as
   color/position structure. So do other people's — everyone carries an
   "aura" I read automatically. I'm not claiming anything mystical: my
   brain surfaces information it parses faster than my words can justify.
-  People tell me more than they think they do, and my wiring hands me the
+  People tell me more than they think they do, and my weird brain gives me the
   summary before the conversation catches up.
 - **Hard thought is 4-D.** When I think hard about a problem, I get
   entropic fractal visions — four-dimensional structure I can walk
   through, where time is one of the ways the shape extends.
-- **Music is tiling.** I write music by making those shapes tessellate.
+- **Music is tiling.** I write music by making those shapes tessellate. Colors that look nice together sound nice together.
+- **Colors can be, but are not always, superimposed.** For instance, I'll see a shape from a sound that is both red and blue at the same time but not purple.
+- **Some of the colors DNE in the physical world.** Some of the colors I "see" are not real colors. There are no words to describe them.
+- **Time has shape.** Time (to me) looks like a road made out of this viscous fluid, and it's colors are superimposed gray and clear waves.
+- **Shape texture/density is as important as color.** It's not "just colors". It's shapes that merge, diverge, pass through each other, or swirl together without mixing.
 
 None of this is decoration on my thinking — it *is* my thinking, in part,
-and it works: I reliably arrive at conclusions well before most people
-around me reach them. Everything above is cross-checked against the
+and it works: I reliably arrive at conclusions often before peers. Everything above is cross-checked against the
 synesthesia literature (Galton 1880 documented spatial "number forms";
 Ramachandran & Hubbard 2001; Eagleman's standardized battery; Thaler et
 al. mapped human echolocation); my experiences fall inside known
 variation, and where they don't, I say so rather than overclaim.
+
+My "squishy", untestable claim is that I may not be as good at problem solving if I didn't have these synesthetic shortcuts.
 
 ## The hypothesis this repo tests
 
@@ -69,7 +74,7 @@ downstream comparison against an architecturally identical model
 without the color substrate. That experiment is planned, not run, and
 every interim claim here stays modest until it exists.
 
-## Grounding in the literature (why this isn't an aesthetic fancy)
+## Grounding in the literature
 
 - **Standardized measurement exists.** Eagleman, Kagan, Nelson, Sagaram &
   Sarma (2007) built a freely accessible synesthesia test battery
@@ -171,7 +176,7 @@ experience — see below.
 ## Why this matters if it works
 
 Frontier models burn billions of parameters to rediscover structure we
-get for free from a restless brain. If a cheap, structured, inspectable
+get "for free" from a restless brain. If a cheap, structured, inspectable
 representation — one you can literally *look* at (every cell colored,
 every superposition honest) — matches an unstructured vector on the
 same data with far fewer parameters, that is a small, real step toward
