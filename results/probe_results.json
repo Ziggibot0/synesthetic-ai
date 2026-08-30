@@ -1,0 +1,128 @@
+{
+ "classes": [
+  "appeal to emotion",
+  "false causality",
+  "ad populum",
+  "circular reasoning",
+  "fallacy of relevance",
+  "faulty generalization",
+  "ad hominem",
+  "fallacy of extension",
+  "equivocation",
+  "fallacy of logic",
+  "fallacy of credibility",
+  "intentional",
+  "false dilemma"
+ ],
+ "baseline": {
+  "appeal to emotion": 0.754,
+  "false causality": 0.887,
+  "ad populum": 0.868,
+  "circular reasoning": 0.83,
+  "fallacy of relevance": 0.681,
+  "faulty generalization": 0.751,
+  "ad hominem": 0.811,
+  "fallacy of extension": 0.879,
+  "equivocation": 0.614,
+  "fallacy of logic": 0.708,
+  "fallacy of credibility": 0.679,
+  "intentional": 0.878,
+  "false dilemma": 0.912
+ },
+ "free": {
+  "color_top2": {
+   "appeal to emotion": 0.565,
+   "false causality": 0.462,
+   "ad populum": 0.523,
+   "circular reasoning": 0.57,
+   "fallacy of relevance": 0.622,
+   "faulty generalization": 0.546,
+   "ad hominem": 0.533,
+   "fallacy of extension": 0.714,
+   "equivocation": 0.544,
+   "fallacy of logic": 0.57,
+   "fallacy of credibility": 0.501,
+   "intentional": 0.535,
+   "false dilemma": 0.596
+  },
+  "rep64": {
+   "appeal to emotion": 0.568,
+   "false causality": 0.47,
+   "ad populum": 0.529,
+   "circular reasoning": 0.578,
+   "fallacy of relevance": 0.549,
+   "faulty generalization": 0.492,
+   "ad hominem": 0.524,
+   "fallacy of extension": 0.625,
+   "equivocation": 0.565,
+   "fallacy of logic": 0.549,
+   "fallacy of credibility": 0.497,
+   "intentional": 0.547,
+   "false dilemma": 0.472
+  }
+ },
+ "distill": {
+  "color_top2": {
+   "appeal to emotion": 0.533,
+   "false causality": 0.553,
+   "ad populum": 0.545,
+   "circular reasoning": 0.617,
+   "fallacy of relevance": 0.494,
+   "faulty generalization": 0.536,
+   "ad hominem": 0.519,
+   "fallacy of extension": 0.539,
+   "equivocation": 0.589,
+   "fallacy of logic": 0.567,
+   "fallacy of credibility": 0.481,
+   "intentional": 0.549,
+   "false dilemma": 0.477
+  },
+  "rep64": {
+   "appeal to emotion": 0.494,
+   "false causality": 0.467,
+   "ad populum": 0.53,
+   "circular reasoning": 0.626,
+   "fallacy of relevance": 0.529,
+   "faulty generalization": 0.543,
+   "ad hominem": 0.527,
+   "fallacy of extension": 0.513,
+   "equivocation": 0.566,
+   "fallacy of logic": 0.554,
+   "fallacy of credibility": 0.474,
+   "intentional": 0.472,
+   "false dilemma": 0.505
+  }
+ },
+ "anchor": {
+  "color_top2": {
+   "appeal to emotion": 0.551,
+   "false causality": 0.456,
+   "ad populum": 0.521,
+   "circular reasoning": 0.558,
+   "fallacy of relevance": 0.483,
+   "faulty generalization": 0.512,
+   "ad hominem": 0.555,
+   "fallacy of extension": 0.504,
+   "equivocation": 0.561,
+   "fallacy of logic": 0.476,
+   "fallacy of credibility": 0.585,
+   "intentional": 0.654,
+   "false dilemma": 0.554
+  },
+  "rep64": {
+   "appeal to emotion": 0.584,
+   "false causality": 0.472,
+   "ad populum": 0.547,
+   "circular reasoning": 0.567,
+   "fallacy of relevance": 0.491,
+   "faulty generalization": 0.586,
+   "ad hominem": 0.524,
+   "fallacy of extension": 0.586,
+   "equivocation": 0.5,
+   "fallacy of logic": 0.468,
+   "fallacy of credibility": 0.527,
+   "intentional": 0.533,
+   "false dilemma": 0.612
+  }
+ }
+}
