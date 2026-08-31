@@ -30,11 +30,16 @@ preserved?
 
 ### Corpus
 
-5,000 sentences from STS-B (Semantic Textual Similarity Benchmark) +
-AudioCaps captions (already in data/). STS-B gives human similarity
-judgments for a direct ground-truth comparison; AudioCaps gives same-clip
-pairs for a cluster-retrieval test. Both are public, standard, and small
-enough to run on CPU.
+2,000 sentences from STS-B (Semantic Textual Similarity Benchmark) — a
+standard NLP dataset where humans rated sentence pairs for meaning
+similarity (0-5 scale). STS-B gives two things: (1) enough sentences
+for a pairwise rho measurement, and (2) human similarity judgments for
+a direct ground-truth comparison. Text-only, no audio, no video.
+
+STS-B is the Semantic Textual Similarity Benchmark (Cer et al. 2017,
+ACL). ~8,000 sentences, ~1,500 human-annotated pairs. It is the standard
+ground truth for testing whether a representation preserves semantic
+meaning.
 
 ### Embedding
 
@@ -97,9 +102,6 @@ under any metric. EMD is the "does spatial structure help?" test on top.
   C  unconstrained   64-dim → 4,608-dim linear, no constraints (capacity ceiling)
   D  random          64-dim → random projection to 4,608 dims (null)
   E  identity        64-dim → 64-dim (no projection, raw embedding ceiling)
-     E2 identity-768   768-dim → 768-dim (full embedding ceiling; the 64-dim
-                     matryoshka already loses ~10% structure vs 768, so E
-                     is a degraded ceiling — E2 shows the true ceiling)
   F  voxel-quant     64-dim → voxel field but WITHOUT quantization (continuous)
                      -- isolates quantization loss from structural loss
 
@@ -109,11 +111,8 @@ under any metric. EMD is the "does spatial structure help?" test on top.
      in projected space vs original 64-dim embedding, on 400 held-out
      sentences (2,000 pairs).
 
-  2. Ground-truth correlation: Spearman rho of projected distances vs
-     STS-B human similarity scores (for the STS-B subset).
-
-  3. Retrieval: for each AudioCaps clip, does the nearest neighbor in
-     projected space retrieve a same-clip caption? (precision@1, N=1000)
+  3. Ground-truth correlation: Spearman rho of projected distances vs
+     STS-B human similarity scores (for the STS-B annotated pairs).
 
 ### Pre-registered gates
 
