@@ -1,6 +1,6 @@
 # Chromavox: Unblended Color-Set Superposition Outperforms Token Sequences on a Disentanglement Task
 
-Sean Kellett
+Sean Kellogg
 
 ## Abstract
 
