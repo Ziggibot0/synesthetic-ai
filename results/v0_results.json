@@ -1,0 +1,47 @@
+{
+  "arms": {
+    "A": {
+      "name": "voxel-full",
+      "rho_embedding": 0.9836,
+      "rho_stsb": -0.8239,
+      "dims": 4608
+    },
+    "B": {
+      "name": "voxel-density",
+      "rho_embedding": 0.9995,
+      "rho_stsb": -0.8244,
+      "dims": 4608
+    },
+    "C": {
+      "name": "unconstrained",
+      "rho_embedding": 1.0,
+      "rho_stsb": -0.8244,
+      "dims": 4608
+    },
+    "D": {
+      "name": "random",
+      "rho_embedding": 0.0305,
+      "rho_stsb": 0.0511,
+      "dims": 4608
+    },
+    "E": {
+      "name": "identity",
+      "rho_embedding": 1.0,
+      "rho_stsb": -0.8244,
+      "dims": 64
+    },
+    "F": {
+      "name": "voxel-quant",
+      "rho_embedding": 0.9837,
+      "rho_stsb": -0.8241,
+      "dims": 4608
+    }
+  },
+  "gates": {
+    "V0-G1": "A rho > 0.50",
+    "V0-G2": "A - D > 0.20",
+    "V0-G3": "A >= 0.70 \u00d7 E",
+    "V0-G4": "A > B",
+    "V0-G5": "F - A < 0.10"
+  }
+}

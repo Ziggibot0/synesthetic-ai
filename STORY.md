@@ -1,5 +1,9 @@
 # The story: Why teach a computer to see in colors?
 
+We call the representation **chromavox** (chroma + vox): a colored voxel
+semantic space. This document is the human story of why that representation
+exists.
+
 ## The personal observation (the hypothesis generator)
 
 I have synesthesia. Specifics, all perceptual rather than interpretive:

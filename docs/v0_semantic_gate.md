@@ -1,9 +1,14 @@
-# V0 — Can the voxel space hold semantic structure? (pre-registered)
+# V0 — Can chromavox space hold semantic structure? (pre-registered)
 
 STATUS: DESIGNED, NOT RUN. This is the foundational gate: before testing
-computation (C0/C1) or binding (B1), test whether the voxel/color-set
+computation (C0/C1) or binding (B1), test whether the chromavox
 representation can preserve semantic structure at all. If it can't,
 nothing downstream matters.
+
+**Chromavox** (chroma + vox): the colored voxel semantic space — a
+3D grid of cells, each carrying density and a bounded color-set (up to
+K=2 entries, each with hue/brightness/alpha), quantized to 2 sig figs.
+The representation this project tests.
 
 ## Why this experiment comes first
 

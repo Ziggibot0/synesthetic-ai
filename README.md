@@ -1,9 +1,10 @@
 # synesthetic-ai
 
-A voxel semantic-space model: text mapped to a position in a small 3D grid
-plus a LIST of HSL colors — not a mix. Two colors at once, never blended
-(a set, not an average), which is the structure the synesthesia literature
-calls simultaneous color experience and this project treats as an
+**Chromavox** (chroma + vox): a colored voxel semantic-space model —
+text mapped to a position in a small 3D grid plus a LIST of HSL colors
+— not a mix. Two colors at once, never blended (a set, not an
+average), which is the structure the synesthesia literature calls
+simultaneous color experience and this project treats as an
 uncertainty/branch representation.
 
 Independent project. Related work (fallacy geometry, JEPA trajectories)
