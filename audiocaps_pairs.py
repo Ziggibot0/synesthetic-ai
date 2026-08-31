@@ -42,6 +42,28 @@ import argparse, json, os, sys, time
 
 import numpy as np
 
+# Windows single-process patch: laion-clap imports torch.distributed.nn
+# which fails on Windows without a process group. Mock the missing bits.
+try:
+    import torch.distributed as dist
+    for _n in ['group', 'ReduceOp', 'broadcast', 'all_reduce', 'all_gather',
+               'reduce_scatter', 'barrier']:
+        if not hasattr(dist, _n):
+            setattr(dist, _n, lambda *a, **k: None)
+    _g = dist.group
+    if not hasattr(_g, 'WORLD'):
+        _g.WORLD = None
+    if not hasattr(dist, 'ReduceOp') or not hasattr(dist.ReduceOp, 'SUM'):
+        class _RO:
+            SUM = 0; PRODUCT = 1; MIN = 2; MAX = 3
+        dist.ReduceOp = _RO
+    import torch.distributed.nn as _dnn
+    _dnn.broadcast = lambda *a, **k: None
+    _dnn.all_reduce = lambda *a, **k: None
+    _dnn.all_gather = lambda *a, **k: None
+except Exception:
+    pass
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 

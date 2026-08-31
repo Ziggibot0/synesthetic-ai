@@ -81,5 +81,5 @@ def main():
           " then --report)")
 
 
-if ____name__ == "__main__":
+if __name__ == "__main__":
     main()

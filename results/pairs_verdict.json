@@ -1,0 +1,11 @@
+{
+ "rho_same": 0.6072197959940511,
+ "rho_shuffled": 0.624511420597988,
+ "delta": -0.01729162460393696,
+ "verdict": "GRAY",
+ "gates": {
+  "rho_pass": 0.15,
+  "delta_pass": 0.1,
+  "kill": 0.05
+ }
+}

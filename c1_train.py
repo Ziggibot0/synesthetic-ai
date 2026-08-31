@@ -81,14 +81,18 @@ def voxel_batch(d, idx, task):
     return x, y_bin, y_dens
 
 
-def token_batch(d, idx, task):
-    """Build a TokenModel batch. sup: interleave f,g; int: derivative values."""
+def token_batch(d, idx, task, serial="interleave"):
+    """Build a TokenModel batch. sup: interleave or concat f,g; int: derivative values."""
     if task == "sup":
         fv = d["f_fine_value"][idx]
         gv = d["g_fine_value"][idx]
         tv = d["t_fine_value"][idx]
-        # interleave [f_0,g_0,f_1,g_1,...] -> length 64
-        src = np.stack([np.stack([f, g], axis=1).reshape(-1) for f, g in zip(fv, gv)])
+        if serial == "concat":
+            # [f_0,f_1,...,f_31,g_0,g_1,...,g_31] -> length 64
+            src = np.concatenate([fv, gv], axis=1)
+        else:
+            # interleave [f_0,g_0,f_1,g_1,...] -> length 64
+            src = np.stack([np.stack([f, g], axis=1).reshape(-1) for f, g in zip(fv, gv)])
         tgt = np.array([[cm._value_to_token(v) for v in row] for row in tv])
     else:
         src = np.array([[cm._value_to_token(v) for v in row] for row in d["in_fine_value"][idx]])
@@ -117,13 +121,13 @@ def voxel_metrics(model, d, idx, task):
     return float(np.mean(rel_errs)), float(np.mean(exacts))
 
 
-def token_metrics(model, d, idx, task):
+def token_metrics(model, d, idx, task, serial="interleave"):
     model.eval()
     rel_errs, exacts = [], []
     with torch.no_grad():
         for i in range(0, len(idx), 256):
             b = idx[i:i + 256]
-            src, tgt = token_batch(d, b, task)
+            src, tgt = token_batch(d, b, task, serial=serial)
             src, tgt = src.to(DEVICE), tgt.to(DEVICE)
             logits = model(src, tgt[:, :-1])
             pred = logits.argmax(-1)
@@ -161,7 +165,7 @@ def load_ckpt(model, opt, tag):
     return 0, None
 
 
-def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_every, resume):
+def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_every, resume, serial="interleave"):
     set_seed(seed)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     start_epoch, best = (load_ckpt(model, opt, tag) if resume else (0, None))
@@ -189,7 +193,7 @@ def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_eve
                 loss = F.cross_entropy(logits.reshape(-1, cm.N_VALUE_BINS), y_bin.reshape(-1))
                 loss = loss + F.mse_loss(dens, y_dens)
             else:
-                src, tgt = token_batch(tr, b, task)
+                src, tgt = token_batch(tr, b, task, serial=serial)
                 src, tgt = src.to(DEVICE), tgt.to(DEVICE)
                 logits = model(src, tgt[:, :-1])
                 loss = F.cross_entropy(logits.reshape(-1, cm.TOK_VOCAB), tgt[:, 1:].reshape(-1))
@@ -210,8 +214,8 @@ def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_eve
             re, ex = voxel_metrics(model, val, np.arange(val["f_value_bin"].shape[0] if task == "sup" else val["in_value_bin"].shape[0]), task)
             re_x, ex_x = voxel_metrics(model, tx, np.arange(tx["f_value_bin"].shape[0] if task == "sup" else tx["in_value_bin"].shape[0]), task)
         else:
-            re, ex = token_metrics(model, val, np.arange(val["f_fine_value"].shape[0] if task == "sup" else val["in_fine_value"].shape[0]), task)
-            re_x, ex_x = token_metrics(model, tx, np.arange(tx["f_fine_value"].shape[0] if task == "sup" else tx["in_fine_value"].shape[0]), task)
+            re, ex = token_metrics(model, val, np.arange(val["f_fine_value"].shape[0] if task == "sup" else val["in_fine_value"].shape[0]), task, serial=serial)
+            re_x, ex_x = token_metrics(model, tx, np.arange(tx["f_fine_value"].shape[0] if task == "sup" else tx["in_fine_value"].shape[0]), task, serial=serial)
         best = re if best is None else min(best, re)
 
         write_status(tag, status="running", epoch=ep, epochs=epochs,
@@ -244,13 +248,15 @@ def main():
     ap.add_argument("--ckpt-every", type=int, default=10)
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--data", default=None)
+    ap.add_argument("--serial", default="interleave", choices=["interleave", "concat"],
+                    help="token serialization for sup task: interleave [f0,g0,...] or concat [f0..f31,g0..g31]")
     a = ap.parse_args()
 
     sup_tr, sup_ti, sup_tx, int_tr, int_ti, int_tx = load_data(a.data)
     tr = sup_tr if a.task == "sup" else int_tr
     val = sup_ti if a.task == "sup" else int_ti
     tx = sup_tx if a.task == "sup" else int_tx
-    tag = f"{a.task}_{a.kind}"
+    tag = f"{a.task}_{a.kind}" if a.serial == "interleave" else f"{a.task}_{a.kind}_{a.serial}"
     os.makedirs(OUT, exist_ok=True)
     t0 = time.time()
 
@@ -258,7 +264,7 @@ def main():
         model = cm.build(a.task, a.kind).to(DEVICE)
         model, re_in, ex_in, re_x, ex_x = train(
             model, tr, val, tx, a.task, a.kind, tag, a.epochs, a.lr, a.batch,
-            a.seed, a.ckpt_every, a.resume)
+            a.seed, a.ckpt_every, a.resume, serial=a.serial)
         result = {
             "task": a.task, "kind": a.kind, "epochs": a.epochs, "lr": a.lr,
             "batch": a.batch, "seed": a.seed, "n_params": model.n_params(),

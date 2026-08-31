@@ -52,14 +52,17 @@ whether this is worth a dedicated run. Artifacts: `docs/calc_c2.md`.
 
 ## Phase 2 — binding lane (induced synesthesia from co-occurrence)
 
-### B1. AudioCaps caption-pair gate — 🔶 DESIGNED/NOT RUN
-Question: do meaning-locked pairing pairs (same clip, ~5 paraphrased
-captions) lift the structure-preservation rho off zero, versus a shuffled
-control? THE gate for the binding mechanism.
-Scripts exist: `scripts/prepare_audiocaps.py` (verified cdjkim CSV URLs,
-clip id = youtube_id + start) + `audiocaps_pairs.py`.
-Gate: PASS rho >= 0.15 AND delta >= 0.10 vs shuffled; KILL rho < 0.05.
-Dep: `laion-clap`. Artifacts: `results/pairs_verdict.json`.
+### B1. AudioCaps caption-pair gate — ✅ DONE (docs/b1_audiocaps_results.md)
+MECHANISM FAILED. Same-clip pairs (rho 0.607) did NOT beat shuffled pairs
+(0.625; delta -0.017, gate required +0.10). Both arms' loss went to 0.000
+— the MLP trivially preserves CLAP's pre-existing structure regardless of
+pairs. The high rho comes from CLAP, not from the pair mechanism. The
+hypothesis "meaning-locked invariance pairs create semantic structure" is
+not supported. Design caveat: the test may have been too easy (MLP on
+CLAP 512-d can pass without learning from pairs); a harder bottleneck
+(from-scratch encoder or 8-d projection) is needed to truly test the
+mechanism. Phase 2 needs redesign before proceeding.
+Scripts: `scripts/prepare_audiocaps.py` + `audiocaps_pairs.py`.
 
 ### R1. Neutral-prose re-rendering retrain — ⬜ PROPOSED
 Question: with meaning-locked pairs, does a retrain on a neutral-prose /
