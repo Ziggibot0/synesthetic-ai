@@ -1,0 +1,14 @@
+{
+  "task": "sup",
+  "kind": "token",
+  "epochs": 60,
+  "lr": 0.0003,
+  "batch": 128,
+  "seed": 1337,
+  "n_params": 10903115,
+  "test_in_rel_err": 1.0039788577672684,
+  "test_in_exact": 0.0,
+  "test_extrap_rel_err": 1.0039788577672684,
+  "test_extrap_exact": 0.0,
+  "seconds": 363.8
+}

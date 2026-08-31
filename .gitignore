@@ -11,3 +11,8 @@ results/drawings/
 # local citation-verification PDFs (publisher copyright - never commit)
 pdfs/
 results/*.npz
+*.tmp
+data/audiocaps_text_emb.npy
+results/calc_*_last.pt
+results/c1_*_last.pt
+results/*.pt

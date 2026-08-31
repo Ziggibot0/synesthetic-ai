@@ -1,0 +1,13 @@
+{
+  "status": "done",
+  "epoch": 60,
+  "epochs": 60,
+  "loss": 0.1816,
+  "val_rel_err": 0.1211,
+  "val_exact": 0.8687,
+  "extrap_rel_err": 0.5398,
+  "best_val_rel_err": 0.1187,
+  "elapsed_s": 2752.4,
+  "eta_s": 0,
+  "device": "cuda"
+}

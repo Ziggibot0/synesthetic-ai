@@ -50,20 +50,22 @@ def load_data(path=None):
            split("int_train_"), split("int_test_in_"), split("int_test_extrap_")
 
 
-def voxel_batch(d, idx, task):
+def voxel_batch(d, idx, task, encoding="cossin"):
     """Build a VoxelModel batch. prefix = 'f'/'g' (sup) or 'in' (int)."""
+    if encoding == "energy":
+        color_keys = ["wavelength", "energy"]
+    else:
+        color_keys = ["hue_cos", "hue_sin"]
     if task == "sup":
         x = {
             "f_value_bin": torch.tensor(d["f_value_bin"][idx], dtype=torch.long),
             "f_density": torch.tensor(d["f_density"][idx], dtype=torch.float32),
-            "f_hue_cos": torch.tensor(d["f_hue_cos"][idx], dtype=torch.float32),
-            "f_hue_sin": torch.tensor(d["f_hue_sin"][idx], dtype=torch.float32),
+            **{f"f_{k}": torch.tensor(d[f"f_{k}"][idx], dtype=torch.float32) for k in color_keys},
             "f_brightness": torch.tensor(d["f_brightness"][idx], dtype=torch.float32),
             "f_alpha": torch.tensor(d["f_alpha"][idx], dtype=torch.float32),
             "g_value_bin": torch.tensor(d["g_value_bin"][idx], dtype=torch.long),
             "g_density": torch.tensor(d["g_density"][idx], dtype=torch.float32),
-            "g_hue_cos": torch.tensor(d["g_hue_cos"][idx], dtype=torch.float32),
-            "g_hue_sin": torch.tensor(d["g_hue_sin"][idx], dtype=torch.float32),
+            **{f"g_{k}": torch.tensor(d[f"g_{k}"][idx], dtype=torch.float32) for k in color_keys},
             "g_brightness": torch.tensor(d["g_brightness"][idx], dtype=torch.float32),
             "g_alpha": torch.tensor(d["g_alpha"][idx], dtype=torch.float32),
         }
@@ -71,8 +73,7 @@ def voxel_batch(d, idx, task):
         x = {
             "in_value_bin": torch.tensor(d["in_value_bin"][idx], dtype=torch.long),
             "in_density": torch.tensor(d["in_density"][idx], dtype=torch.float32),
-            "in_hue_cos": torch.tensor(d["in_hue_cos"][idx], dtype=torch.float32),
-            "in_hue_sin": torch.tensor(d["in_hue_sin"][idx], dtype=torch.float32),
+            **{f"in_{k}": torch.tensor(d[f"in_{k}"][idx], dtype=torch.float32) for k in color_keys},
             "in_brightness": torch.tensor(d["in_brightness"][idx], dtype=torch.float32),
             "in_alpha": torch.tensor(d["in_alpha"][idx], dtype=torch.float32),
         }
@@ -101,13 +102,13 @@ def token_batch(d, idx, task, serial="interleave"):
             torch.tensor(tgt, dtype=torch.long))
 
 
-def voxel_metrics(model, d, idx, task):
+def voxel_metrics(model, d, idx, task, encoding="cossin"):
     model.eval()
     rel_errs, exacts = [], []
     with torch.no_grad():
         for i in range(0, len(idx), 256):
             b = idx[i:i + 256]
-            x, y_bin, _ = voxel_batch(d, b, task)
+            x, y_bin, _ = voxel_batch(d, b, task, encoding=encoding)
             x = {k: v.to(DEVICE) for k, v in x.items()}
             y_bin = y_bin.to(DEVICE)
             logits, _ = model(x)
@@ -165,7 +166,7 @@ def load_ckpt(model, opt, tag):
     return 0, None
 
 
-def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_every, resume, serial="interleave"):
+def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_every, resume, serial="interleave", encoding="cossin"):
     set_seed(seed)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     start_epoch, best = (load_ckpt(model, opt, tag) if resume else (0, None))
@@ -186,7 +187,7 @@ def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_eve
         for bi, i in enumerate(range(0, n, batch)):
             b = idx[i:i + batch]
             if kind == "voxel":
-                x, y_bin, y_dens = voxel_batch(tr, b, task)
+                x, y_bin, y_dens = voxel_batch(tr, b, task, encoding=encoding)
                 x = {k: v.to(DEVICE) for k, v in x.items()}
                 y_bin, y_dens = y_bin.to(DEVICE), y_dens.to(DEVICE)
                 logits, dens = model(x)
@@ -211,8 +212,8 @@ def train(model, tr, val, tx, task, kind, tag, epochs, lr, batch, seed, ckpt_eve
         eta = avg_ep * (epochs - ep)
 
         if kind == "voxel":
-            re, ex = voxel_metrics(model, val, np.arange(val["f_value_bin"].shape[0] if task == "sup" else val["in_value_bin"].shape[0]), task)
-            re_x, ex_x = voxel_metrics(model, tx, np.arange(tx["f_value_bin"].shape[0] if task == "sup" else tx["in_value_bin"].shape[0]), task)
+            re, ex = voxel_metrics(model, val, np.arange(val["f_value_bin"].shape[0] if task == "sup" else val["in_value_bin"].shape[0]), task, encoding=encoding)
+            re_x, ex_x = voxel_metrics(model, tx, np.arange(tx["f_value_bin"].shape[0] if task == "sup" else tx["in_value_bin"].shape[0]), task, encoding=encoding)
         else:
             re, ex = token_metrics(model, val, np.arange(val["f_fine_value"].shape[0] if task == "sup" else val["in_fine_value"].shape[0]), task, serial=serial)
             re_x, ex_x = token_metrics(model, tx, np.arange(tx["f_fine_value"].shape[0] if task == "sup" else tx["in_fine_value"].shape[0]), task, serial=serial)
@@ -250,6 +251,8 @@ def main():
     ap.add_argument("--data", default=None)
     ap.add_argument("--serial", default="interleave", choices=["interleave", "concat"],
                     help="token serialization for sup task: interleave [f0,g0,...] or concat [f0..f31,g0..g31]")
+    ap.add_argument("--encoding", default="cossin", choices=["cossin", "energy"],
+                    help="color encoding for voxel arm: cossin (hue cos/sin) or energy (wavelength+energy)")
     a = ap.parse_args()
 
     sup_tr, sup_ti, sup_tx, int_tr, int_ti, int_tx = load_data(a.data)
@@ -257,14 +260,16 @@ def main():
     val = sup_ti if a.task == "sup" else int_ti
     tx = sup_tx if a.task == "sup" else int_tx
     tag = f"{a.task}_{a.kind}" if a.serial == "interleave" else f"{a.task}_{a.kind}_{a.serial}"
+    if a.encoding != "cossin":
+        tag = f"{tag}_{a.encoding}"
     os.makedirs(OUT, exist_ok=True)
     t0 = time.time()
 
     try:
-        model = cm.build(a.task, a.kind).to(DEVICE)
+        model = cm.build(a.task, a.kind, encoding=a.encoding).to(DEVICE)
         model, re_in, ex_in, re_x, ex_x = train(
             model, tr, val, tx, a.task, a.kind, tag, a.epochs, a.lr, a.batch,
-            a.seed, a.ckpt_every, a.resume, serial=a.serial)
+            a.seed, a.ckpt_every, a.resume, serial=a.serial, encoding=a.encoding)
         result = {
             "task": a.task, "kind": a.kind, "epochs": a.epochs, "lr": a.lr,
             "batch": a.batch, "seed": a.seed, "n_params": model.n_params(),

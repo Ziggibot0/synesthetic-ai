@@ -78,19 +78,42 @@ def _eval(expr, xg):
     return v
 
 
-def _color_features(v):
-    """Corrected color encoding for a normalized value array v in [-1,1]."""
+def _color_features(v, encoding="cossin"):
+    """Color encoding for a normalized value array v in [-1,1].
+
+    encoding="cossin":  hue as (cos, sin) — the C1 encoding
+    encoding="energy":  wavelength (200-1000nm, UV→IR) + energy E=hc/λ
+                        — physically grounded; v=-1 → 1000nm (IR, low E),
+                        v=+1 → 200nm (UV, high E). Includes IR/UV beyond
+                        visible spectrum for more encoding room.
+    """
     value_bin = np.clip(((v + 1) / 2 * N_VALUE_BINS).astype(int), 0, N_VALUE_BINS - 1)
     density = np.array([sig2(abs(x)) for x in v])
     fine_value = np.array([sig2(x) for x in v])
-    hue_deg = (v + 1) / 2 * 360
-    hue_cos = np.array([sig2(np.cos(np.deg2rad(h))) for h in hue_deg])
-    hue_sin = np.array([sig2(np.sin(np.deg2rad(h))) for h in hue_deg])
     brightness = np.array([sig2(abs(x)) for x in v])
     alpha = np.array([1.0 if x >= 0 else 0.5 for x in v])
-    return dict(value_bin=value_bin, density=density, fine_value=fine_value,
-                hue_cos=hue_cos, hue_sin=hue_sin, brightness=brightness,
-                alpha=alpha)
+
+    if encoding == "energy":
+        # wavelength: v=-1 → 1000nm (IR), v=+1 → 200nm (UV)
+        wavelength = 1000.0 - (v + 1) / 2 * 800.0          # nm, 200-1000
+        # energy: E = hc/λ, h=6.626e-34, c=3e8, λ in meters
+        # E in eV = 1240 / λ_nm  (handy shortcut)
+        energy_ev = 1240.0 / wavelength
+        # normalize to [-1, 1] by own range for stable training
+        e_min, e_max = 1240.0 / 1000.0, 1240.0 / 200.0   # 1.24 to 6.2 eV
+        energy_norm = 2.0 * (energy_ev - e_min) / (e_max - e_min) - 1.0
+        wavelength_norm = 2.0 * (wavelength - 200.0) / 800.0 - 1.0
+        return dict(value_bin=value_bin, density=density, fine_value=fine_value,
+                    wavelength=np.array([sig2(x) for x in wavelength_norm]),
+                    energy=np.array([sig2(x) for x in energy_norm]),
+                    brightness=brightness, alpha=alpha)
+    else:
+        hue_deg = (v + 1) / 2 * 360
+        hue_cos = np.array([sig2(np.cos(np.deg2rad(h))) for h in hue_deg])
+        hue_sin = np.array([sig2(np.sin(np.deg2rad(h))) for h in hue_deg])
+        return dict(value_bin=value_bin, density=density, fine_value=fine_value,
+                    hue_cos=hue_cos, hue_sin=hue_sin, brightness=brightness,
+                    alpha=alpha)
 
 
 def _norm(v):
@@ -98,7 +121,7 @@ def _norm(v):
     return v / m
 
 
-def make_superposition(n, families, x_lo, x_hi, rng):
+def make_superposition(n, families, x_lo, x_hi, rng, encoding="cossin"):
     """C1a: two functions f,g; target = derivative of f only."""
     xg = np.linspace(x_lo, x_hi, N_X)
     rows = []
@@ -108,9 +131,9 @@ def make_superposition(n, families, x_lo, x_hi, rng):
         fv = _norm(_eval(f, xg))
         gv = _norm(_eval(g, xg))
         fp = _norm(_eval(sp.diff(f, sp.Symbol("x")), xg))
-        ff = _color_features(fv)
-        gf = _color_features(gv)
-        tgt = _color_features(fp)
+        ff = _color_features(fv, encoding=encoding)
+        gf = _color_features(gv, encoding=encoding)
+        tgt = _color_features(fp, encoding=encoding)
         rows.append({
             **{f"f_{k}": v for k, v in ff.items()},
             **{f"g_{k}": v for k, v in gf.items()},
@@ -136,12 +159,12 @@ def make_integration(n, families, x_lo, x_hi, rng):
     return {k: np.stack([r[k] for r in rows]) for k in rows[0]}
 
 
-def generate(n_train, n_test, seed):
+def generate(n_train, n_test, seed, encoding="cossin"):
     rng = np.random.default_rng(seed)
     return {
-        "sup_train": make_superposition(n_train, ["poly", "trig"], *X_TRAIN, rng),
-        "sup_test_in": make_superposition(n_test, ["poly", "trig"], *X_TEST_IN, rng),
-        "sup_test_extrap": make_superposition(n_test, ["exp", "combo"], *X_TEST_EXTRAP, rng),
+        "sup_train": make_superposition(n_train, ["poly", "trig"], *X_TRAIN, rng, encoding=encoding),
+        "sup_test_in": make_superposition(n_test, ["poly", "trig"], *X_TEST_IN, rng, encoding=encoding),
+        "sup_test_extrap": make_superposition(n_test, ["exp", "combo"], *X_TEST_EXTRAP, rng, encoding=encoding),
         "int_train": make_integration(n_train, ["poly", "trig"], *X_TRAIN, rng),
         "int_test_in": make_integration(n_test, ["poly", "trig"], *X_TEST_IN, rng),
         "int_test_extrap": make_integration(n_test, ["exp", "combo"], *X_TEST_EXTRAP, rng),
@@ -154,9 +177,11 @@ def main():
     ap.add_argument("--n-test", type=int, default=4000)
     ap.add_argument("--seed", type=int, default=1337)
     ap.add_argument("--out", default="c1_data.npz")
+    ap.add_argument("--encoding", default="cossin", choices=["cossin", "energy"],
+                    help="color encoding: cossin (hue cos/sin) or energy (wavelength+energy, UV-IR)")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
-    d = generate(a.n_train, a.n_test, a.seed)
+    d = generate(a.n_train, a.n_test, a.seed, encoding=a.encoding)
     path = os.path.join(OUT, a.out)
     np.savez(path, **{f"{k}_{kk}": v for k, dd in d.items() for kk, v in dd.items()})
     print(f"wrote {path}")

@@ -1,0 +1,13 @@
+{
+  "arm": "E",
+  "epochs": 60,
+  "lr": 0.0003,
+  "batch": 128,
+  "seed": 1337,
+  "n_params": 10675217,
+  "test_in_rel_err": 0.1036394923573391,
+  "test_in_exact": 0.9270751960575581,
+  "test_extrap_rel_err": 0.4440880343265671,
+  "test_extrap_exact": 0.6105072014033794,
+  "seconds": 2360.3
+}

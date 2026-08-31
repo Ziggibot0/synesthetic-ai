@@ -78,28 +78,39 @@ class _Block(nn.Module):
 
 
 class VoxelModel(nn.Module):
-    """Voxel arm for C1a (superposition) and C1b (integration)."""
+    """Voxel arm for C1a (superposition) and C1b (integration).
 
-    def __init__(self, task):
+    encoding="cossin":  features = [density, hue_cos, hue_sin, brightness, alpha]
+    encoding="energy":  features = [density, wavelength, energy, brightness, alpha]
+    Both are 5 features → same proj Linear(5, H), same param count.
+    """
+
+    def __init__(self, task, encoding="cossin"):
         super().__init__()
         assert task in ("sup", "int"), task
         self.task = task
+        self.encoding = encoding
         self.pos = nn.Parameter(torch.randn(N_X, H) * 0.02)
         self.value_emb = nn.Embedding(N_VALUE_BINS, H)
-        # corrected color: concat [value_bin_emb + density, hue_cos, hue_sin,
-        # brightness, alpha] -> single projection. For sup, two streams.
-        self.proj = nn.Linear(5, H)   # density, hue_cos, hue_sin, brightness, alpha
+        self.proj = nn.Linear(5, H)   # 5 features regardless of encoding
         self.layers = nn.ModuleList([_Block(H, FFN, N_HEADS) for _ in range(6)])
         self.head_bin = nn.Linear(H, N_VALUE_BINS)
         self.head_dens = nn.Linear(H, 1)
 
     def _stream(self, x, prefix):
         """Build the per-position feature vector for one stream."""
-        feats = torch.stack([
-            x[f"{prefix}_density"], x[f"{prefix}_hue_cos"],
-            x[f"{prefix}_hue_sin"], x[f"{prefix}_brightness"],
-            x[f"{prefix}_alpha"],
-        ], dim=-1)                       # (B, N_X, 5)
+        if self.encoding == "energy":
+            feats = torch.stack([
+                x[f"{prefix}_density"], x[f"{prefix}_wavelength"],
+                x[f"{prefix}_energy"], x[f"{prefix}_brightness"],
+                x[f"{prefix}_alpha"],
+            ], dim=-1)
+        else:
+            feats = torch.stack([
+                x[f"{prefix}_density"], x[f"{prefix}_hue_cos"],
+                x[f"{prefix}_hue_sin"], x[f"{prefix}_brightness"],
+                x[f"{prefix}_alpha"],
+            ], dim=-1)                       # (B, N_X, 5)
         return self.proj(feats)
 
     def forward(self, x):
@@ -149,9 +160,9 @@ class TokenModel(nn.Module):
         return sum(p.numel() for p in self.parameters())
 
 
-def build(task, kind):
+def build(task, kind, encoding="cossin"):
     if kind == "voxel":
-        return VoxelModel(task)
+        return VoxelModel(task, encoding=encoding)
     if kind == "token":
         return TokenModel()
     raise ValueError(kind)
