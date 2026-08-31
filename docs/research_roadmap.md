@@ -29,23 +29,17 @@ operator was tested; superposition and integration were not.
 
 ## Phase 1 — test the substrate's untested claims
 
-### C1. Superposition + integration probe — 🔶 DESIGNED/NOT RUN
-Question: does the substrate's signature machinery — multiple values
-coexisting in one cell as separate color-set entries (superposition),
-and NONLOCAL accumulation (integration/antidifferentiation) — confer any
-advantage the local derivative task could not reveal?
-Why it matters: C0 only ever exercised a local operator where attention
-on flat tokens is already optimal. Whether the substrate wins where it
-should is still open.
-Task design: (a) superposition — two functions share cells, model must
-keep their color-sets separate and output the derivative of the first
-only; (b) integration — f' -> f (antiderivative), which needs global
-accumulation (Riemann over density) that local attention does not
-naturally do.
-Gate: voxel arm beats/ties the token baseline on the nonlocal task; kill
-if tokens still dominate on both. Artifacts: `eval/` + `docs/calc_c1.md`.
-Code: `c1_data.py`, `c1_model.py`, `c1_train.py`, `c1_report.py`,
-`c1_run_all.py` — built, smoke-tested, staged not run.
+### C1. Superposition + integration probe — ✅ DONE (docs/calc_c1_results.md)
+SPLIT verdict. SUPERPOSITION is the substrate's FIRST real advantage:
+voxel 0.1137 vs token 1.004 (token failed, exact 0.00) — the color-SET
+representation genuinely beats tokens at keeping co-located streams
+separate. INTEGRATION is another tokens-win (token 0.007 vs voxel 0.22;
+voxel didn't even reach the compute gate) — the design's hypothesis that
+integration favors the substrate was FALSIFIED by the data. Only
+superposition is validated; do not build on integration as a native edge.
+Phase 2 binding (B1) is still the next gate — semantic meaning is NOT yet
+claimed (toy calculus), B1/E1 still required before publication. Code:
+`c1_*.py` — built, ran, results recorded.
 
 ### C2. Symbolic differentiation — ⬛ DEFERRED
 Question: can the substrate do SYMBOLIC differentiation (expression ->

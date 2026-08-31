@@ -61,9 +61,12 @@ def main():
     print("-" * 60)
 
     if (a1 and a2) or (b1 and b2):
-        print("VERDICT: PASS — the voxel substrate has a real, task-specific")
-        print("         advantage (superposition and/or integration). Proceed to")
-        print("         Phase 2 (binding lane) with the substrate validated.")
+        print("VERDICT: PARTIAL PASS — the voxel substrate has a REAL,")
+        print("         REPRODUCIBLE edge on SUPERPOSITION (C1a). It does")
+        print("         NOT win on integration (C1b): tokens crush it there,")
+        print("         exactly as they did on C0's differentiation.")
+        print("         Only superposition is validated. Integration joins")
+        print("         the tokens-win pile. See docs/calc_c1_results.md.")
     else:
         print("VERDICT: KILL — the token baseline beats the voxel substrate on")
         print("         both superposition and integration. The C0 kill is a")

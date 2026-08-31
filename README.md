@@ -81,6 +81,11 @@ at 1/100th the size.
   differentiation), with the controlled finding that color ENCODING (not
   color itself) was arm A's problem, and the explicit scope limitation
   that superposition and integration (nonlocal) remain untested.
+- `docs/calc_c1_results.md` — Phase 1 result (2026-08-30): SPLIT verdict.
+  Superposition is the substrate's FIRST real advantage (voxel 0.11 vs
+  token 1.00); integration is another tokens-win (design hypothesis
+  falsified). Only superposition validated; binding lane (B1) remains the
+  next gate for any semantic claim.
 - `docs/research_roadmap.md` — THE ordered plan of every experiment in the
   project's arc (C1..F1, V1..V2 across 4 phases), each pre-registered
   with gates/kill conditions and artifact locations, so the session's
