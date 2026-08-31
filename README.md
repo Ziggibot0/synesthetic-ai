@@ -76,6 +76,11 @@ at 1/100th the size.
   baseline; PASS/kill gates written down. Calc-first by design: existence
   proof for the substrate before any real-world data; the AudioCaps
   binding gate follows after.
+- `docs/calc_results.md` — the honest outcome of that experiment (2026-08-30):
+  KILL on the pre-registered gate (tokens beat all voxel arms on pointwise
+  differentiation), with the controlled finding that color ENCODING (not
+  color itself) was arm A's problem, and the explicit scope limitation
+  that superposition and integration (nonlocal) remain untested.
 
 ## Status (honest)
 
