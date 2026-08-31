@@ -1,0 +1,40 @@
+{
+  "arms": {
+    "A": {
+      "name": "learned-dist",
+      "rho_embedding": 0.9542,
+      "rho_stsb": -0.0186,
+      "dims": 4608
+    },
+    "B": {
+      "name": "learned-autoenc",
+      "rho_embedding": 0.973,
+      "rho_stsb": -0.0177,
+      "dims": 4608
+    },
+    "C": {
+      "name": "fixed-ortho",
+      "rho_embedding": 0.9826,
+      "rho_stsb": -0.0189,
+      "dims": 4608
+    },
+    "D": {
+      "name": "random",
+      "rho_embedding": 0.002,
+      "rho_stsb": 0.0346,
+      "dims": 4608
+    },
+    "E": {
+      "name": "identity",
+      "rho_embedding": 1.0,
+      "rho_stsb": -0.0216,
+      "dims": 64
+    }
+  },
+  "gates": {
+    "G1": true,
+    "G2": true,
+    "G3": true,
+    "G4": true
+  }
+}
