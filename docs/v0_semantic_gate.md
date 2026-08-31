@@ -5,7 +5,7 @@ computation (C0/C1) or binding (B1), test whether the chromavox
 representation can preserve semantic structure at all. If it can't,
 nothing downstream matters.
 
-**Chromavox** (chroma + vox): the colored voxel semantic space — a
+**Chromavox** (chroma + voxel): the colored voxel semantic space — a
 3D grid of cells, each carrying density and a bounded color-set (up to
 K=2 entries, each with hue/brightness/alpha), quantized to 2 sig figs.
 The representation this project tests.

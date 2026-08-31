@@ -4,7 +4,7 @@ Sean Kellogg
 
 ## Abstract
 
-We introduce **chromavox** (chroma + vox), a colored voxel semantic-space
+**Chromavox** (chroma + voxel): the colored voxel semantic space
 representation in which each cell of a 3D grid carries a bounded SET of
 color entries (up to K=2), each with its own hue, brightness, and alpha.
 Colors in a set coexist without blending — red AND blue, never purple —

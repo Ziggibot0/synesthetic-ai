@@ -1,6 +1,6 @@
 # synesthetic-ai
 
-**Chromavox** (chroma + vox): a colored voxel semantic-space model —
+**Chromavox** (chroma + voxel): a colored voxel semantic-space model —
 text mapped to a position in a small 3D grid plus a LIST of HSL colors
 — not a mix. Two colors at once, never blended (a set, not an
 average), which is the structure the synesthesia literature calls

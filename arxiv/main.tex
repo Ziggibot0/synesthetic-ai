@@ -14,7 +14,7 @@
 \maketitle
 
 \begin{abstract}
-We introduce \textbf{chromavox} (chroma + vox), a colored voxel semantic-space representation in which each cell of a 3D grid carries a bounded SET of color entries (up to $K{=}2$), each with its own hue, brightness, and alpha. Colors in a set coexist without blending---red AND blue, never purple---matching the ``simultaneous color experience'' reported in the synesthesia literature and providing a native representation for uncertainty and superposition.
+We introduce \textbf{chromavox} (chroma + voxel), a colored voxel semantic-space representation in which each cell of a 3D grid carries a bounded SET of color entries (up to $K{=}2$), each with its own hue, brightness, and alpha. Colors in a set coexist without blending---red AND blue, never purple---matching the ``simultaneous color experience'' reported in the synesthesia literature and providing a native representation for uncertainty and superposition.
 
 We test three claims in sequence: (1) the chromavox space can hold semantic structure projected from a pretrained text embedding (V0, structure preservation $\rho{=}0.984$); (2) a learned MLP encoder can produce chromavox fields from 64-dim matryoshka embeddings while preserving 95--97\% of pairwise distance structure (V1, $\rho{=}0.954$--$0.973$); and (3) on a superposition task where two streams share the same spatial positions, the chromavox representation decisively outperforms a param-matched token baseline (C1a, relative error $0.114$ vs $1.004$, token exact-match $0\%$).
 
@@ -47,7 +47,7 @@ Effective dimensionality: $512 \times 9 = 4{,}608$. But the constraints (sigmoid
 
 \section{Experiments}
 
-All experiments use pre-registered gates, param-matched controls, and deterministic seeds (seed 1337). Code, logs, and result JSONs are at \texttt{github.com/Ziggibot0/synesthetic-ai}.
+All experiments use pre-registered gates, param-matched controls, and deterministic seeds (seed 1337).
 
 \subsection{V0: Can chromavox space hold semantic structure?}
 
@@ -158,11 +158,25 @@ The V0 and V1 results establish that chromavox space can hold and recover semant
 
 \section{Reproducibility}
 
-All code, pre-registered designs, per-epoch logs, and result JSONs are at \texttt{github.com/Ziggibot0/synesthetic-ai}. Experiments are deterministic (seed 1337) and reproducible with:
+All experiments use deterministic seeds (seed 1337) and are reproducible on
+a standard laptop with Python 3.12, PyTorch, NumPy, and SciPy. V0 and V1
+run on CPU in under 30 minutes total. C1 runs on a single GPU
+(AMD Radeon 8050S iGPU, ${\sim}2$h). Complete source code, pre-registered
+designs, per-epoch logs, and machine-readable result files are available
+at the author's repository.\footnote{Repository and commit hash will be
+provided upon acceptance.} Key implementation details:
+
 \begin{itemize}
-\item \texttt{py -3.12 v0\_semantic\_gate.py} (V0, ${\sim}5$ min CPU)
-\item \texttt{py -3.12 v1\_learned\_encoder.py -{}-epochs 200} (V1, ${\sim}20$ min CPU)
-\item \texttt{py -3.12 c1\_run\_all.py -{}-epochs 60} (C1, ${\sim}2$h iGPU)
+\item \textbf{V0:} 2,000 STS-B test sentences, nomic-embed-text v1.5
+(64-dim matryoshka), fixed orthogonal projection, 2-sig-fig quantization.
+${\sim}5$ min CPU.
+\item \textbf{V1:} 10,566 STS-B train sentences, MLP encoder
+($64 \to 256 \to 4{,}608$), 200 epochs, AdamW lr$=3\times10^{-4}$.
+${\sim}20$ min CPU.
+\item \textbf{C1a:} 20,000 training samples (sympy-generated polynomials
+and trigonometric functions, 32 x-bins), 6-layer transformer encoder
+($H{=}384$, FFN$=1{,}536$, 8 heads), 60 epochs, batch 128.
+Param-matched: voxel 10,674,065 vs token 10,903,115 (within 2.2\%).
 \end{itemize}
 
 \bibliographystyle{plain}
