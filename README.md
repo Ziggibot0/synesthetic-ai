@@ -81,6 +81,10 @@ at 1/100th the size.
   differentiation), with the controlled finding that color ENCODING (not
   color itself) was arm A's problem, and the explicit scope limitation
   that superposition and integration (nonlocal) remain untested.
+- `docs/research_roadmap.md` — THE ordered plan of every experiment in the
+  project's arc (C1..F1, V1..V2 across 4 phases), each pre-registered
+  with gates/kill conditions and artifact locations, so the session's
+  long run doesn't lose track of what's next and in what order.
 
 ## Status (honest)
 
