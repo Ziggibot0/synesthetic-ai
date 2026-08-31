@@ -1,0 +1,14 @@
+{
+  "task": "sup",
+  "kind": "voxel",
+  "epochs": 60,
+  "lr": 0.0003,
+  "batch": 128,
+  "seed": 1337,
+  "n_params": 10674065,
+  "test_in_rel_err": 0.11551674596667827,
+  "test_in_exact": 0.8866012580692768,
+  "test_extrap_rel_err": 0.5648864050456197,
+  "test_extrap_exact": 0.5030975341796875,
+  "seconds": 3608.8
+}
