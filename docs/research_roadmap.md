@@ -29,7 +29,7 @@ operator was tested; superposition and integration were not.
 
 ## Phase 1 — test the substrate's untested claims
 
-### C1. Superposition + integration probe — 🔶 PROPOSED
+### C1. Superposition + integration probe — 🔶 DESIGNED/NOT RUN
 Question: does the substrate's signature machinery — multiple values
 coexisting in one cell as separate color-set entries (superposition),
 and NONLOCAL accumulation (integration/antidifferentiation) — confer any
@@ -37,13 +37,15 @@ advantage the local derivative task could not reveal?
 Why it matters: C0 only ever exercised a local operator where attention
 on flat tokens is already optimal. Whether the substrate wins where it
 should is still open.
-Task design (to be fleshed out): (a) superposition — two functions share
-cells, model must keep their color-sets separate and correctly assign
-derivatives; (b) integration — f' -> f (antiderivative), which needs
-global accumulation (Riemann over density) that local attention does not
+Task design: (a) superposition — two functions share cells, model must
+keep their color-sets separate and output the derivative of the first
+only; (b) integration — f' -> f (antiderivative), which needs global
+accumulation (Riemann over density) that local attention does not
 naturally do.
 Gate: voxel arm beats/ties the token baseline on the nonlocal task; kill
 if tokens still dominate on both. Artifacts: `eval/` + `docs/calc_c1.md`.
+Code: `c1_data.py`, `c1_model.py`, `c1_train.py`, `c1_report.py`,
+`c1_run_all.py` — built, smoke-tested, staged not run.
 
 ### C2. Symbolic differentiation — ⬛ DEFERRED
 Question: can the substrate do SYMBOLIC differentiation (expression ->
