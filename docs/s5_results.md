@@ -78,6 +78,24 @@ complete, publishable negative arc: one novel positive (C1a), one
 validated scene encoder (S4: sparse, position-alive, meaning-preserving
 solo), and a clean boundary around when the color-set mechanism works.
 
+## Post-hoc audit (2026-09-01, after Sean's challenge: "are you SURE?")
+
+The one legitimate concern: S5's superpose() carried only each stream's
+slot-0 color (2 streams x 3 slots = 6 contents into a 3-slot cell, so 4
+were dropped). If meaning were spread across slots, the scene arm was
+handicapped and the KILL confounded. Measured on the frozen S4 encoder
+(s5a_slot_audit.py, no gates, diagnostic):
+
+  salience-only rho 0.38 | slot-0 0.53 | slot-1 0.51 | slot-2 0.51 | all 0.54
+
+Each slot carries nearly the full color signal (redundant copies);
+dropping slots 1-2 cost ~0.005. NOT confounded. Remaining honest caveats,
+on the record: (1) S2/S5 readers are MLPs over the flat field while
+C1a's reader was a transformer with attention over positions — an
+attention reader could make cell-clustering easier to learn; (2) the
+scene encoder had no pressure toward per-stream color coherence (that is
+the identified mechanism, not a slip).
+
 ## Reproducibility
 
   py -3.12 s5_superposition.py --smoke   # ~2 min
