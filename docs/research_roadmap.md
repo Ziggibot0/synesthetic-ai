@@ -31,7 +31,7 @@ operator was tested; superposition and integration were not.
 
 ### C1. Superposition + integration probe — ✅ DONE (docs/calc_c1_results.md)
 SPLIT verdict. SUPERPOSITION is the substrate's FIRST real advantage:
-voxel 0.1137 vs token 1.004 (token failed, exact 0.00) — the color-SET
+voxel 0.1137 vs token 1.004 (token failed, exact 0.00) — the color set
 representation genuinely beats tokens at keeping co-located streams
 separate. INTEGRATION is another tokens-win (token 0.007 vs voxel 0.22;
 voxel didn't even reach the compute gate) — the design's hypothesis that
@@ -63,6 +63,50 @@ CLAP 512-d can pass without learning from pairs); a harder bottleneck
 (from-scratch encoder or 8-d projection) is needed to truly test the
 mechanism. Phase 2 needs redesign before proceeding.
 Scripts: `scripts/prepare_audiocaps.py` + `audiocaps_pairs.py`.
+
+### S2. Semantic superposition (co-located dual-stream recoverability) — ✅ DONE (docs/s2_results.md)
+KILL, clean. Full run 2026-08-31 (33 min iGPU, pre-registered gates
+docs/calc_s2.md): colocated reader recovers rho 0.41 vs solo ceiling
+0.9975; all three gates fail; encoder valid (0.967), swap 0.51. MECHANISM
+found: the arm-B AE spreads every sentence across ~all 512 cells (paired
+lit-cell Jaccard 0.995), so superposed density (mass ADDS) is
+un-invertible and no channel carries stream identity. Consequence per
+pre-registration: S2r (evidence resolution) and V2E are MOOT at this
+layer; next is a representation-side change — occupancy/sparsity prior
+so streams partition cells — then re-run these same gates. C1a's
+superposition claim stands, scope sharpened: the set mechanism needs
+separability IN the field geometry, co-location alone is not enough.
+
+### S2r. Evidence-resolved superposition (belief-update gate) — ⬜ PROPOSED
+The goal's temporal clause — "hold multiple states until evidence resolves
+them" — and the paper's scope-limitation #3, untested anywhere in this
+repo. State = superposed field (S2 construction), evidence = an added
+input semantically near one stream; an update net reads (field, evidence)
+and emits a resolved field. Pre-registered gates (written after S2's
+verdict, before S2r runs): pre-evidence both streams recoverable (S2-G1
+reused); post-evidence the compatible stream is preserved while the
+incompatible stream degrades by >= threshold; the wrong-branch control is
+symmetric (resolution is content-driven, not a decay knob); and the
+substrate clause holds: update-from-field >= re-encode-from-text — the
+held field must be the substrate that resolved, not a cache. Blocked on
+S2. Artifacts: docs/calc_s2r.md, `s2r_*.py`.
+
+### S2b. Learned semantic superposition full (V2, Lane 1) — ⬜ PROPOSED
+Follows S2 on a PASS. With the V1 learned encoder + the C1a sequence model,
+feed two REAL sentences into the same cells, task = "extract stream A" —
+C1a's disentanglement task transplanted onto semantic content. Reuses C1a's
+architecture + V1's encoder (retrained ~20min, weights not currently saved).
+Needs a fresh param-matched token baseline. If the set advantage survives
+semantics, this is the "so what" C3 payoff. Blocked on S2 PASS.
+Artifacts: `s2b_*`, docs/calc_s2b.md.
+
+### S2c. Harder-bottleneck binding redo (B1, Lane 2) — ⬜ PROPOSED
+From-scratch encoder (no CLAP shortcut) or 8-d projection where the model
+MUST learn from pairs, to test whether B1's mechanism really is dead or just
+never got exercised. Heavier (real iGPU training). Unlocks R1/M1/E1. Backstop:
+even if this KILLs, embedding-vibes fallacy-trajectory work remains Sean's
+stronger dissertation candidate. Blocked on S2 (or run in parallel as the
+fallback lane). Artifacts: docs/calc_s2c.md.
 
 ### R1. Neutral-prose re-rendering retrain — ⬜ PROPOSED
 Question: with meaning-locked pairs, does a retrain on a neutral-prose /

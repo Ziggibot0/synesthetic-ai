@@ -1,0 +1,37 @@
+{
+  "experiment": "S2 semantic superposition disentanglement",
+  "date": "2026-08-31 22:04:52",
+  "seed": 1337,
+  "mode": "full",
+  "n_train_pool": 10000,
+  "n_heldout": 400,
+  "n_fields": 200,
+  "n_pairs": 2000,
+  "ollama_tag": "nomic-embed-text:v1.5",
+  "enc_epochs": 200,
+  "reader_epochs": 300,
+  "encoder_solo_rho": 0.9667,
+  "validity_bar": 0.9,
+  "mean_lit_jaccard": 0.9946,
+  "swap_rate": 0.5099999904632568,
+  "rho": {
+    "rho_solo": 0.9975,
+    "rho_colocated": 0.4119,
+    "rho_density_solo": 0.9963,
+    "rho_density_colocated": 0.4096,
+    "rho_color_solo": 0.9975,
+    "rho_color_colocated": 0.4134
+  },
+  "rho_role0": 0.426,
+  "rho_role1": 0.3494,
+  "delta_solo_colocated": 0.5856,
+  "delta_role0": 0.5715,
+  "delta_role1": 0.6481,
+  "gates": {
+    "G1_capacity": false,
+    "G2_interference": false,
+    "G3_symmetry": false
+  },
+  "verdict": "KILL",
+  "wall_minutes": 33.4
+}
