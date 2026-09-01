@@ -102,14 +102,22 @@ as coarse clustering. "Location means something" is NOT free from the
 matryoshka head; the grid must be LEARNED to mean something (adjacency
 loss, S3c), not assumed.
 
-### S3c. Learned adjacency (location-means-something via loss) — ⬜ PROPOSED
-The non-bandaid path to a meaningful grid, after S3 KILLed the fixed
-map. Train the encoder so spatial displacement between thoughts tracks
-semantic similarity (adjacency loss: rise/run between voxel sets ~
-cosine similarity), plus location-as-choice (grid = vocabulary of
-places) for sparsity. This is the real test of "location means
-something" — learned, not assumed. Blocked on nothing; pre-register
-before run. Artifacts: docs/calc_s3c.md, `s3c_*.py`.
+### S4. Scene encoder (text -> sparse scene -> meaning out) — ✅ DONE (docs/s4_results.md)
+GRAY, informative. Pre-registered docs/calc_s4.md; the drift-correction
+experiment (first encoding that is a SCENE, not a point or smear). Full
+run 9.7 min iGPU, 5 arms. The scene mechanic WORKS: top-k exact (16/8/32
+cells lit), freq colors 10/10 bins (all-red dead), and — for the first
+time in the project — POSITION IS ALIVE (rho 0.17-0.20 vs -0.16 dead
+null; the dense control confirms sparsity is the cause: same arch minus
+top-k = dead again). Meaning mostly survives: round-trip 0.80 @ k=16,
+0.89 @ k=32 (dense 0.998). Failing gates, honestly: G1 0.80 < 0.85 and
+G2 separation 0.44 > 0.30 — sparsity induced position-life but not full
+spatial spread. k-sweep shows the trade: smaller k = more separation
+less meaning, larger k = reverse; the gates assumed independence, the
+knobs are coupled. Fork (pre-register before running): k=64 scene /
+k=16 + repulsion loss / or accept k=32-0.41 and test SUPERPOSITION on
+these sparse-partially-overlapping scenes — the honest middle regime
+the color-set slots were built for.
 
 ### S2r. Evidence-resolved superposition (belief-update gate) — ⬜ PROPOSED
 The goal's temporal clause — "hold multiple states until evidence resolves

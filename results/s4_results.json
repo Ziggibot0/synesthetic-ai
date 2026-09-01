@@ -1,0 +1,50 @@
+{
+  "mode": "full",
+  "n_hold": 400,
+  "A": {
+    "name": "scene-k16",
+    "M1_roundtrip_rho": 0.8005,
+    "M2_occupancy": 16.0,
+    "M3_jaccard": 0.4446,
+    "M4_position_rho": 0.1737,
+    "M5_color_rho": 0.5504,
+    "M5_freq_bins_used": 10
+  },
+  "B": {
+    "name": "dense",
+    "M1_roundtrip_rho": 0.9979,
+    "M2_occupancy": 511.9,
+    "M3_jaccard": 0.9995,
+    "M4_position_rho": -0.0971,
+    "M5_color_rho": 0.9688,
+    "M5_freq_bins_used": 10
+  },
+  "C": {
+    "name": "scene-k8",
+    "M1_roundtrip_rho": 0.6061,
+    "M2_occupancy": 8.0,
+    "M3_jaccard": 0.2067,
+    "M4_position_rho": 0.1222,
+    "M5_color_rho": 0.4637,
+    "M5_freq_bins_used": 10
+  },
+  "D": {
+    "name": "scene-k32",
+    "M1_roundtrip_rho": 0.8934,
+    "M2_occupancy": 32.0,
+    "M3_jaccard": 0.4089,
+    "M4_position_rho": 0.1963,
+    "M5_color_rho": 0.5395,
+    "M5_freq_bins_used": 10
+  },
+  "E": {
+    "name": "identity",
+    "M1_roundtrip_rho": 1.0
+  },
+  "gates": {
+    "G1_meaning_survives": false,
+    "G2_is_a_scene": false,
+    "G3_position_alive": true
+  },
+  "verdict": "GRAY"
+}
