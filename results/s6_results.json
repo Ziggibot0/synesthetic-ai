@@ -1,0 +1,103 @@
+{
+  "mode": "full",
+  "lambda_rt": 1.0,
+  "epochs": 200,
+  "J": {
+    "pairings": [
+      {
+        "rho_coloc": 0.2738,
+        "recover_acc": 0.5075,
+        "jaccard": 0.4367
+      },
+      {
+        "rho_coloc": 0.3214,
+        "recover_acc": 0.5175,
+        "jaccard": 0.4375
+      },
+      {
+        "rho_coloc": 0.3164,
+        "recover_acc": 0.505,
+        "jaccard": 0.4384
+      }
+    ],
+    "rho_mean": 0.3039,
+    "rho_std": 0.0214,
+    "recover_acc": 0.51,
+    "solo_roundtrip_rho": 0.9155,
+    "M5_color_rho": 0.5383,
+    "coherence": {
+      "within": 0.7631,
+      "between": 0.9913,
+      "within_minus_between": -0.2282,
+      "palette_vs_meaning_rho": 0.0999
+    }
+  },
+  "F": {
+    "pairings": [
+      {
+        "rho_coloc": 0.2852,
+        "recover_acc": 0.525,
+        "jaccard": 0.5645
+      },
+      {
+        "rho_coloc": 0.3549,
+        "recover_acc": 0.5275,
+        "jaccard": 0.5605
+      },
+      {
+        "rho_coloc": 0.2792,
+        "recover_acc": 0.4975,
+        "jaccard": 0.5595
+      }
+    ],
+    "rho_mean": 0.3064,
+    "rho_std": 0.0344,
+    "recover_acc": 0.5167,
+    "solo_roundtrip_rho": 0.8724,
+    "M5_color_rho": 0.5538,
+    "coherence": {
+      "within": 0.7031,
+      "between": 0.9883,
+      "within_minus_between": -0.2851,
+      "palette_vs_meaning_rho": 0.0656
+    }
+  },
+  "D": {
+    "pairings": [
+      {
+        "rho_coloc": 0.2741,
+        "recover_acc": 0.53,
+        "jaccard": 0.8373
+      },
+      {
+        "rho_coloc": 0.3326,
+        "recover_acc": 0.53,
+        "jaccard": 0.8629
+      },
+      {
+        "rho_coloc": 0.27,
+        "recover_acc": 0.53,
+        "jaccard": 0.8502
+      }
+    ],
+    "rho_mean": 0.2922,
+    "rho_std": 0.0286,
+    "recover_acc": 0.53,
+    "solo_roundtrip_rho": 0.9967,
+    "M5_color_rho": 0.9028,
+    "coherence": {
+      "within": 0.7352,
+      "between": 0.998,
+      "within_minus_between": -0.2629,
+      "palette_vs_meaning_rho": 0.1181
+    }
+  },
+  "gates": {
+    "G0_validity": false,
+    "G1_unfold_lifts": false,
+    "G2_gradient_did_it": false,
+    "G3_substrate_matters": false,
+    "G4_coherence_rose": false
+  },
+  "verdict": "INVALID"
+}
