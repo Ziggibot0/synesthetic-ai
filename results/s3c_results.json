@@ -1,0 +1,25 @@
+{
+  "rho_color_vs_residual": 0.15760978021154873,
+  "rho_color_vs_location": 0.0764912104014868,
+  "rho_location_only_vs_full": 0.5274876079653256,
+  "rho_combined_vs_full": 0.528205495395605,
+  "color_adds_to_location": 0.0007178874302794513,
+  "nm_range": [
+    380.0,
+    700.0
+  ],
+  "freq_std_fraction": 0.1663,
+  "nm_hist_bins_used": 10,
+  "nm_hist": [
+    24,
+    119,
+    283,
+    485,
+    466,
+    322,
+    168,
+    89,
+    31,
+    13
+  ]
+}
