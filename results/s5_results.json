@@ -1,0 +1,23 @@
+{
+  "mode": "full",
+  "scene_Jaccard": 0.5645,
+  "scene_solo": {
+    "rho": 1.0,
+    "recall_acc": 1.0
+  },
+  "scene_colocated": {
+    "rho_coloc": 0.1975,
+    "recover_acc": 0.3575
+  },
+  "dense_colocated": {
+    "rho_coloc": 0.2432,
+    "recover_acc": 0.475
+  },
+  "gates": {
+    "G0_validity_solo": true,
+    "G1_unfold": false,
+    "G2_scenes_beat_smears": false,
+    "G3_crowd": true
+  },
+  "verdict": "KILL"
+}

@@ -119,6 +119,20 @@ k=16 + repulsion loss / or accept k=32-0.41 and test SUPERPOSITION on
 these sparse-partially-overlapping scenes — the honest middle regime
 the color-set slots were built for.
 
+### S5. Superposition on scenes (crowding hypothesis) — ✅ DONE (docs/s5_results.md)
+KILL, clean. Pre-registered docs/calc_s5.md (+ dated amendment: readers
+train on pool only — smoke exposed train/eval contamination saturating
+at rho 1.0). Frozen S4 encoders, 4.6 min iGPU. Scene colocated 0.198
+(recover_acc 0.36) vs dense union control 0.243 — scenes did NOT beat
+smears; solo scene readable at rho 1.0. Crowding hypothesis falsified:
+overlap fraction is not the operative variable. Unifying mechanism
+across C1a/S2/S5: unfold requires per-stream COLOR COHERENCE (C1a had
+it by construction, hue=value; language scenes don't, S4 M5=0.54).
+Remaining lever: learned palette-coherence pressure (real build,
+fingerprint risk). Thesis clause 2 (hold multiple states) now KILLed
+at the semantic layer under every encoding tested. Paper claims stand;
+scope-limitation #1 closed decisively.
+
 ### S2r. Evidence-resolved superposition (belief-update gate) — ⬜ PROPOSED
 The goal's temporal clause — "hold multiple states until evidence resolves
 them" — and the paper's scope-limitation #3, untested anywhere in this
