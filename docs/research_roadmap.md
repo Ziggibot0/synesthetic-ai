@@ -77,6 +77,19 @@ so streams partition cells — then re-run these same gates. C1a's
 superposition claim stands, scope sharpened: the set mechanism needs
 separability IN the field geometry, co-location alone is not enough.
 
+### S2a. Channel audit — ✅ DONE (docs/s2a_channel_audit.md)
+Diagnostic (2026-09-01, no gates, non-destructive re-read of the S2
+encoder). Sean's escape-hatch hypothesis TESTED and mostly REFUTED:
+hue-only rho 0.960 vs full 0.966 — colors ALREADY carry the semantics;
+density 0.627 (partial, partly redundant with hue); brightness/alpha
+0.664. Occupancy binary rho -0.164: position semantically DEAD (grid
+used as parallel slots, adjacency unused). Revised S2-failure reading:
+destructive ADDING of density in the superposition construction +
+all-cells-lit geometry; density is a symptom of position being dead.
+Next experiment (proposed, pre-register before run): 4-arm ablation —
+arm 1 no-density slots (Sean's fix), arm 2 top-k occupancy prior,
+arm 3 both, arm 4 S2 re-run control; same reader + gates as calc_s2.md.
+
 ### S2r. Evidence-resolved superposition (belief-update gate) — ⬜ PROPOSED
 The goal's temporal clause — "hold multiple states until evidence resolves
 them" — and the paper's scope-limitation #3, untested anywhere in this
