@@ -26,7 +26,7 @@ Each cell holds:
 Position = the cell index itself. Value dims quantized to 2 significant
 figures (~100 buckets each; axes are integer cell indices already).
 
-CRITICAL (Sean's catch, 2026-08-30): the color structure is a SET per
+CRITICAL (Sean's catch, 2026-08-30): the color structure is a set per
 cell, not a single record - a cell has ONE density (mass adds) but TWO
 coexisting colors (they alternate, they never blend). A one-tuple-per-
 cell design would force co-located red+blue to emit a single hue -

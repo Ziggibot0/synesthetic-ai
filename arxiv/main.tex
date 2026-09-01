@@ -14,18 +14,18 @@
 \maketitle
 
 \begin{abstract}
-We introduce \textbf{chromavox} (chroma + voxel), a colored voxel semantic-space representation in which each cell of a 3D grid carries a bounded SET of color entries (up to $K{=}2$), each with its own hue, brightness, and alpha. Colors in a set coexist without blending---red AND blue, never purple---matching the ``simultaneous color experience'' reported in the synesthesia literature and providing a native representation for uncertainty and superposition.
+We introduce \textbf{chromavox} (chroma + voxel), a colored voxel semantic-space representation in which each cell of a 3D grid carries a bounded set of color entries (up to $K{=}2$), each with its own hue, brightness, and alpha. Colors in a set coexist without blending---red AND blue, never purple---matching the ``simultaneous color experience'' reported in the synesthesia literature and providing a native representation for uncertainty and superposition.
 
 We test three claims in sequence: (1) the chromavox space can hold semantic structure projected from a pretrained text embedding (V0, structure preservation $\rho{=}0.984$); (2) a learned MLP encoder can produce chromavox fields from 64-dim matryoshka embeddings while preserving 95--97\% of pairwise distance structure (V1, $\rho{=}0.954$--$0.973$); and (3) on a superposition task where two streams share the same spatial positions, the chromavox representation decisively outperforms a param-matched token baseline (C1a, relative error $0.114$ vs $1.004$, token exact-match $0\%$).
 
-The superposition result is the first demonstration that an unblended color-SET representation offers a task-specific advantage over flat token sequences. We honestly report two negative results on the same substrate (differentiation and integration, where tokens dominate) and discuss the scope limitations of the positive finding.
+The superposition result is the first demonstration that an unblended color-set representation offers a task-specific advantage over flat token sequences. We honestly report two negative results on the same substrate (differentiation and integration, where tokens dominate) and discuss the scope limitations of the positive finding.
 \end{abstract}
 
 \section{Introduction}
 
 Representation determines capability. Abacus embeddings~\cite{abacus} showed that the right positional embedding can take a transformer from near-0\% to near-perfect on arithmetic. Lample \& Charton~\cite{lample2020} beat Mathematica at symbolic integration through a representation choice (prefix-notation tokenization). The geometry of the representation, not the model architecture, was the lever.
 
-This paper asks whether a \textit{structured} representation---hue as an ordinal axis, color-sets as un-collapsed superpositions, brightness as salience, an ego-centered spatial grid---gives a model capabilities that a plain token sequence does not. The representation is motivated by synesthesia: the author has synesthetic perception in which multiple colors coexist at the same spatial location without blending. We treat this as a computational primitive (a bounded SET, not an average) and test whether it earns its keep.
+This paper asks whether a \textit{structured} representation---hue as an ordinal axis, color-sets as un-collapsed superpositions, brightness as salience, an ego-centered spatial grid---gives a model capabilities that a plain token sequence does not. The representation is motivated by synesthesia: the author has synesthetic perception in which multiple colors coexist at the same spatial location without blending. We treat this as a computational primitive (a bounded set, not an average) and test whether it earns its keep.
 
 \section{The Chromavox Representation}
 
@@ -114,9 +114,9 @@ token (concatenated) & 1.004 & 0.000 & 1.004 & 10,903,115 \\
 \end{tabular}
 \end{table}
 
-\textbf{Finding.} The chromavox voxel arm achieves relative error 0.114 while BOTH token baselines completely fail (rel.\ err 1.004, exact-match 0.000). The token failure is not a serialization artifact---concatenated tokens fail identically to interleaved. The color-SET representation genuinely outperforms tokens at keeping co-located streams separate and extracting the correct one.
+\textbf{Finding.} The chromavox voxel arm achieves relative error 0.114 while BOTH token baselines completely fail (rel.\ err 1.004, exact-match 0.000). The token failure is not a serialization artifact---concatenated tokens fail identically to interleaved. The color-set representation genuinely outperforms tokens at keeping co-located streams separate and extracting the correct one.
 
-The energy/wavelength encoding (200--1000nm, UV--IR) ties the cos/sin encoding (0.116 vs 0.114), confirming the advantage comes from the SET structure, not the specific color values.
+The energy/wavelength encoding (200--1000nm, UV--IR) ties the cos/sin encoding (0.116 vs 0.114), confirming the advantage comes from the set structure, not the specific color values.
 
 \subsection{Negative results (honestly reported)}
 
@@ -131,7 +131,7 @@ We also tested whether meaning-locked invariance pairs (same-clip AudioCaps capt
 
 \section{Discussion}
 
-The positive result is narrow but genuine: on a task that exercises chromavox's one distinctive capability (multiple things in one cell, kept separate), it decisively outperforms a param-matched token baseline that completely fails. This is the first demonstration of a task-specific advantage for an unblended color-SET representation.
+The positive result is narrow but genuine: on a task that exercises chromavox's one distinctive capability (multiple things in one cell, kept separate), it decisively outperforms a param-matched token baseline that completely fails. This is the first demonstration of a task-specific advantage for an unblended color-set representation.
 
 The negative results define the boundary: the advantage does not extend to local pointwise operators (differentiation, integration) where token attention already excels. The substrate is not a general-purpose computational engine---it is a representation with a specific structural capability (superposition/disentanglement) that tokens lack.
 
@@ -151,7 +151,7 @@ The V0 and V1 results establish that chromavox space can hold and recover semant
 \begin{itemize}
 \item \textbf{Abacus embeddings}~\cite{abacus}: representation geometry determines arithmetic capability. Chromavox tests the same principle for a different representation.
 \item \textbf{Lample \& Charton}~\cite{lample2020}: prefix-notation tokenization beats Mathematica at symbolic integration. The token baseline in C1a is in this lineage.
-\item \textbf{Anthropic toy models of superposition}~\cite{toy}: features superpose in neural networks as directions in activation space. Chromavox makes superposition an explicit, bounded SET rather than an emergent direction.
+\item \textbf{Anthropic toy models of superposition}~\cite{toy}: features superpose in neural networks as directions in activation space. Chromavox makes superposition an explicit, bounded set rather than an emergent direction.
 \item \textbf{Ramachandran \& Hubbard}~\cite{ramachandran}: synesthesia as cross-modal binding. Chromavox is motivated by but does not claim to model synesthetic perception.
 \item \textbf{Eagleman et al.}~\cite{eagleman}: clinical diagnostic battery for synesthesia (consistency, automaticity). The operational definition of ``machine synesthesia-like binding'' in this project draws from this framework.
 \end{itemize}

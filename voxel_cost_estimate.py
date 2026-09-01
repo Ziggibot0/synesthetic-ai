@@ -34,7 +34,7 @@ import math
 #    This makes a curve (not a straight line).
 #  - Each voxel carries a COLOUR (the "semantic" dimension).
 #  - Two colours at once, NOT a mix (e.g. red + blue, not purple).
-#    → This is a SET of colours, not a single RGB value.
+#    → This is a set of colours, not a single RGB value.
 #  - Uncertainty → superposition (quantum-style probability amp).
 #
 # So a "semantic point" is:
@@ -44,7 +44,7 @@ import math
 #   classic Rubik's = 3×3×3 grid, 6 faces × 1 colour each face,
 #   but our version:
 #     - 3D grid (x, y, z)
-#     - each cell has a SET of colours (0 to N possible)
+#     - each cell has a set of colours (0 to N possible)
 #     - optional probability amplitude (superposition)
 
 
@@ -213,7 +213,7 @@ def compare(n_points: int = 10000):
     print(f"     probability vector + grid distance. Still cheap, but")
     print(f"     not a single dot product anymore.")
     print(f"  4. The 'two colours at once, not a mix' constraint means")
-    print(f"     you're working with SETS, not vectors. Set-distance")
+    print(f"     you're working with sets, not vectors. Set-distance")
     print(f"     (Jaccard, symmetric-difference) is cheap but different")
     print(f"     from cosine similarity.")
     print(f"  5. For NEAREST-NEIGHBOUR search in the full 768-dim space")

@@ -59,7 +59,7 @@ overall story is NOT "the substrate is validated." It is SPLITTED:
 ## What this means for the roadmap
 
 - Superposition is validated as a real substrate capability. This is the
-  scientific finding worth building on: the color-SET representation
+  scientific finding worth building on: the color-set representation
   genuinely outperforms tokens at keeping co-located streams separate.
 - Integration is NOT validated; do not build on it. Drop M1/V1's reliance
   on "integration as a native substrate edge" (they were about binding,

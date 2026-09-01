@@ -5,7 +5,7 @@ Sean Kellogg
 ## Abstract
 
 **Chromavox** (chroma + voxel): the colored voxel semantic space
-representation in which each cell of a 3D grid carries a bounded SET of
+representation in which each cell of a 3D grid carries a bounded set of
 color entries (up to K=2), each with its own hue, brightness, and alpha.
 Colors in a set coexist without blending — red AND blue, never purple —
 matching the "simultaneous color experience" reported in the synesthesia
@@ -22,7 +22,7 @@ the chromavox representation decisively outperforms a param-matched token
 baseline (C1a, relative error 0.114 vs 1.004, token exact-match 0%).
 
 The superposition result is the first demonstration that an unblended
-color-SET representation offers a task-specific advantage over flat token
+color-set representation offers a task-specific advantage over flat token
 sequences. We honestly report two negative results on the same substrate
 (differentiation and integration, where tokens dominate) and discuss
 the scope limitations of the positive finding.
@@ -42,7 +42,7 @@ an ego-centered spatial grid — gives a model capabilities that a plain
 token sequence does not. The representation is motivated by synesthesia:
 the author has synesthetic perception in which multiple colors coexist
 at the same spatial location without blending. We treat this as a
-computational primitive (a bounded SET, not an average) and test whether
+computational primitive (a bounded set, not an average) and test whether
 it earns its keep.
 
 ## 2. The chromavox representation
@@ -151,12 +151,12 @@ Three token serialization controls: interleaved (original), concatenated
 **Finding.** The chromavox voxel arm achieves relative error 0.114 while
 BOTH token baselines completely fail (rel_err 1.004, exact-match 0.000).
 The token failure is not a serialization artifact — concatenated tokens
-fail identically to interleaved. The color-SET representation genuinely
+fail identically to interleaved. The color-set representation genuinely
 outperforms tokens at keeping co-located streams separate and extracting
 the correct one.
 
 The energy/wavelength encoding (200-1000nm, UV-IR) ties the cos/sin
-encoding (0.116 vs 0.114), confirming the advantage comes from the SET
+encoding (0.116 vs 0.114), confirming the advantage comes from the set
 structure, not the specific color values.
 
 ### 3.4 Negative results (honestly reported)
@@ -183,7 +183,7 @@ The positive result is narrow but genuine: on a task that exercises
 chromavox's one distinctive capability (multiple things in one cell,
 kept separate), it decisively outperforms a param-matched token baseline
 that completely fails. This is the first demonstration of a task-specific
-advantage for an unblended color-SET representation.
+advantage for an unblended color-set representation.
 
 The negative results define the boundary: the advantage does not extend
 to local pointwise operators (differentiation, integration) where token
@@ -224,7 +224,7 @@ than a plain high-dimensional vector.
   in this lineage.
 - **Anthropic toy models of superposition (2022)**: features
   superpose in neural networks as directions in activation space.
-  Chromavox makes superposition an explicit, bounded SET rather than
+  Chromavox makes superposition an explicit, bounded set rather than
   an emergent direction.
 - **Ramachandran & Hubbard (2001)**: synesthesia as cross-modal
   binding. Chromavox is motivated by but does not claim to model

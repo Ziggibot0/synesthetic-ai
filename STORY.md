@@ -51,7 +51,7 @@ a belief. Three claims, each falsifiable:
    (ICLR 2020) got transformers beating Mathematica on symbolic
    integration by careful representation choice.
 2. **C2 (analogue).** A *voxel + superimposed color-set* representation
-   — quantized position with a SET of colors (never mixed), brightness
+   — quantized position with a set of colors (never mixed), brightness
    as salience, two-color superposition for uncertainty — induces
    *geometric* structure that survives better than an equivalent-sized
    continuous embedding measured by structure-preservation (distance
@@ -97,7 +97,7 @@ every interim claim here stays modest until it exists.
   congenital analogue.)
 - **Superposition is a real ML concern.** A neural net cannot usefully
   pack 5 features into 2 dimensions without interference (Elhage et
-  al., "Toy Models of Superposition," Anthropic 2022). A color-SET per
+  al., "Toy Models of Superposition," Anthropic 2022). A color-set per
   cell — features that co-exist unblended rather than average — is a
   hand-built escape from exactly that interference. Nobody, to our
   knowledge, represents uncertainty as multiple co-located hues rather
@@ -131,7 +131,7 @@ in [REFERENCES.md](REFERENCES.md), verified against primary sources on
   binding in a learner and then tests it.
 
 The gap: to our knowledge, no work (1) induces color binding with zero
-human color priors, (2) represents the binding as an unblended SET
+human color priors, (2) represents the binding as an unblended set
 (superposition, never mixture), and (3) evaluates the result against
 clinical-style criteria rather than impressions. That is this repo's
 lane. If a reviewer knows of a counterexample, the claims here are
