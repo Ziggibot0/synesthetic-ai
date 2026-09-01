@@ -1,0 +1,45 @@
+{
+  "n_sentences": 2000,
+  "front3_eigen_frac": [
+    0.4177622135272344,
+    0.37567018747435205,
+    0.2065675982985597
+  ],
+  "E_identity": 1.0,
+  "A": {
+    "grid": 8,
+    "hue": "cossin",
+    "rho": 0.0030079967019121536,
+    "rho_null": 0.0054362656238875935,
+    "cells_used": 249
+  },
+  "B": {
+    "grid": 8,
+    "hue": "wavelength",
+    "rho": 0.059120849384937446,
+    "rho_null": 0.0520073210638742,
+    "cells_used": 249
+  },
+  "C": {
+    "grid": 16,
+    "hue": "cossin",
+    "rho": -0.009718416631093702,
+    "rho_null": -0.01230997798136308,
+    "cells_used": 926
+  },
+  "D": {
+    "grid": 4,
+    "hue": "cossin",
+    "rho": 0.07553497460350647,
+    "rho_null": 0.055017467045342994,
+    "cells_used": 52
+  },
+  "gates": {
+    "G1_front3_holds": false,
+    "G2_beats_null": false,
+    "G3_within_ceiling": false,
+    "G4_grid_matters": true,
+    "G5_hue_encoding": true
+  },
+  "verdict": "KILL"
+}

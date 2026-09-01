@@ -90,6 +90,27 @@ Next experiment (proposed, pre-register before run): 4-arm ablation —
 arm 1 no-density slots (Sean's fix), arm 2 top-k occupancy prior,
 arm 3 both, arm 4 S2 re-run control; same reader + gates as calc_s2.md.
 
+### S3. Front-3-as-location — ✅ DONE (docs/s3_results.md)
+KILL, clean. Pre-registered docs/calc_s3.md, fixed mapping, zero training,
+~2 min. Sean's idea: matryoshka front-3 dims -> xyz grid, back dims ->
+color, no density. Result: front-3 dims are NOT spatially coherent — rho
+0.003 (arm A), indistinguishable from random null (0.005). NOT a
+collapse-to-line (eigen-frac 0.418/0.376/0.207 — balanced 3-D spread);
+the dims just don't place similar sentences near each other. Grid sweep:
+smaller grid helps (D 4^3 rho 0.076 > A 8^3 0.003) — quantization acts
+as coarse clustering. "Location means something" is NOT free from the
+matryoshka head; the grid must be LEARNED to mean something (adjacency
+loss, S3c), not assumed.
+
+### S3c. Learned adjacency (location-means-something via loss) — ⬜ PROPOSED
+The non-bandaid path to a meaningful grid, after S3 KILLed the fixed
+map. Train the encoder so spatial displacement between thoughts tracks
+semantic similarity (adjacency loss: rise/run between voxel sets ~
+cosine similarity), plus location-as-choice (grid = vocabulary of
+places) for sparsity. This is the real test of "location means
+something" — learned, not assumed. Blocked on nothing; pre-register
+before run. Artifacts: docs/calc_s3c.md, `s3c_*.py`.
+
 ### S2r. Evidence-resolved superposition (belief-update gate) — ⬜ PROPOSED
 The goal's temporal clause — "hold multiple states until evidence resolves
 them" — and the paper's scope-limitation #3, untested anywhere in this
